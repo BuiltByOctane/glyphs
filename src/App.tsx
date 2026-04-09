@@ -5,6 +5,7 @@ import { ClipboardList } from "./features/clipboard/components/clipboard-list";
 
 import { Footer } from "./features/clipboard/components/footer";
 import { useShortcuts } from "./features/clipboard/shortcuts/use-shortcuts";
+import { QrModal } from "./features/clipboard/components/qr-modal";
 
 export default function App() {
   const {
@@ -19,6 +20,7 @@ export default function App() {
   } = useClipboardStore();
 
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [qrContent, setQrContent] = useState<string | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -52,7 +54,7 @@ export default function App() {
   });
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-transparent rounded-2xl border-white/20 dark:border-white/10 overflow-hidden">
+    <div className="flex flex-col h-screen w-screen bg-transparent rounded-2xl border-white/20 dark:border-white/10 overflow-hidden text-foreground">
       <SearchBar
         ref={searchRef}
         searchQuery={searchQuery}
@@ -68,9 +70,14 @@ export default function App() {
           searchQuery={searchQuery}
           selectedIndex={selectedIndex}
           onPasteItem={pasteItem}
+          onShowQr={setQrContent}
         />
       </div>
       <Footer />
+
+      {qrContent && (
+        <QrModal content={qrContent} onClose={() => setQrContent(null)} />
+      )}
     </div>
   );
 }

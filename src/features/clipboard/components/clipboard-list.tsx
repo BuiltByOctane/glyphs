@@ -9,6 +9,7 @@ interface ClipboardListProps {
   searchQuery: string;
   selectedIndex: number;
   onPasteItem: (id: string) => void;
+  onShowQr: (content: string) => void;
 }
 
 export function ClipboardList({
@@ -18,6 +19,7 @@ export function ClipboardList({
   searchQuery,
   selectedIndex,
   onPasteItem,
+  onShowQr,
 }: ClipboardListProps) {
   if (items.length === 0) {
     return (
@@ -42,6 +44,7 @@ export function ClipboardList({
               index={idx}
               selectedIndex={selectedIndex}
               onClick={() => onPasteItem(item.id)}
+              onShowQr={onShowQr}
             />
           ))}
         </div>
@@ -59,6 +62,7 @@ export function ClipboardList({
               index={idx + pinnedItems.length}
               selectedIndex={selectedIndex}
               onClick={() => onPasteItem(item.id)}
+              onShowQr={onShowQr}
             />
           ))}
         </div>
