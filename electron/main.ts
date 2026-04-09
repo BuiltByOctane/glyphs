@@ -41,6 +41,8 @@ function createWindow() {
     backgroundColor: "#00000000",
     alwaysOnTop: true,
     skipTaskbar: true,
+    autoHideMenuBar: true,
+    icon: path.join(process.env.VITE_PUBLIC, "icon.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.mjs"),
       nodeIntegration: false,
@@ -91,11 +93,12 @@ app.whenReady().then(() => {
 
   createWindow();
 
-  const icon = nativeImage.createEmpty();
-  tray = new Tray(icon);
-  tray.setToolTip("Glyph Clipboard");
+  const iconPath = path.join(process.env.VITE_PUBLIC, "icon.png");
+  const trayIcon = nativeImage.createFromPath(iconPath).resize({ width: 18, height: 18 });
+  tray = new Tray(trayIcon);
+  tray.setToolTip("Glyphs Clipboard");
   const contextMenu = Menu.buildFromTemplate([
-    { label: "Show Glyph", click: () => toggleWindow() },
+    { label: "Show Glyphs", click: () => toggleWindow() },
     { type: "separator" },
     { label: "Quit", click: () => app.quit() },
   ]);

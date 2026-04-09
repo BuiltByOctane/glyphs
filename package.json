@@ -1,9 +1,9 @@
 {
-  "name": "glyph",
+  "name": "glyphs",
   "private": true,
   "version": "0.1.0",
-  "description": "Glassmorphic macOS Clipboard Manager",
-  "author": "Glyph Team",
+  "description": "",
+  "author": "",
   "type": "module",
   "scripts": {
     "dev": "vite",
