@@ -34,8 +34,8 @@ export function ItemRow({ item, index, selectedIndex, onClick }: ItemRowProps) {
     <div
       ref={rowRef}
       className={cn(
-        "group cursor-pointer bg-white/5 hover:bg-white/10 flex items-center justify-between rounded-lg py-1 px-2 mx-2 transition-colors text-sm mb-1.5",
-        isSelected ? "text-primary-foreground" : "text-foreground",
+        "group cursor-pointer hover:bg-white/10 flex items-center justify-between rounded-lg py-1 px-2 mx-2 transition-colors text-sm mb-1.5",
+        isSelected ? "bg-white/15 text-white" : "bg-white/5 text-foreground",
       )}
       onClick={onClick}
     >
@@ -43,17 +43,28 @@ export function ItemRow({ item, index, selectedIndex, onClick }: ItemRowProps) {
         {item.type === "text" ? (
           <Type
             size={16}
-            className="opacity-50 shrink-0 dark:text-white text-black"
+            className={cn(
+              "opacity-50 shrink-0",
+              isSelected ? "text-white" : "dark:text-white text-black",
+            )}
           />
         ) : (
           <ImageIcon
             size={16}
-            className="opacity-50 shrink-0 dark:text-white text-black"
+            className={cn(
+              "opacity-50 shrink-0",
+              isSelected ? "text-white" : "dark:text-white text-black",
+            )}
           />
         )}
         <div className="truncate flex-1 max-w-400">
           {item.type === "text" ? (
-            <span className="whitespace-pre-wrap dark:text-white text-black line-clamp-1">
+            <span
+              className={cn(
+                "whitespace-pre-wrap line-clamp-1",
+                isSelected ? "text-white" : "dark:text-white text-black",
+              )}
+            >
               {item.content.trim()}
             </span>
           ) : (
@@ -65,34 +76,42 @@ export function ItemRow({ item, index, selectedIndex, onClick }: ItemRowProps) {
         </div>
       </div>
 
-      <div
-        className={cn(
-          "flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity",
+      <div className="relative flex items-center justify-end min-w-32px shrink-0">
+        {index < 9 && (
+          <span className="text-[10px] font-medium text-white/20 px-1.5 py-0.5 rounded border border-white/5 bg-white/10 group-hover:opacity-0 transition-opacity absolute right-0">
+            {"\u2318"}
+            <span className="ml-1">{index + 1}</span>
+          </span>
         )}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          onClick={() => pasteItem(item.id, true)}
-          className="p-1 rounded-sm hover:bg-black/10 dark:hover:bg-white/10"
-          title="Paste as Plain Text"
+        <div
+          className={cn(
+            "flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity bg-transparent",
+          )}
+          onClick={(e) => e.stopPropagation()}
         >
-          <ClipboardPaste size={14} className="text-white cursor-pointer" />
-        </button>
-        <button
-          onClick={() => togglePin(item.id)}
-          className="p-1 rounded-sm hover:bg-black/10 dark:hover:bg-white/10"
-        >
-          <Pin
-            size={14}
-            className={`cursor-pointer ${item.isPinned ? "fill-current text-white" : "text-white"}`}
-          />
-        </button>
-        <button
-          onClick={() => deleteItem(item.id)}
-          className="p-1 rounded-sm hover:bg-red-500/20 text-red-500"
-        >
-          <Trash2 className="text-red-400 cursor-pointer" size={14} />
-        </button>
+          <button
+            onClick={() => pasteItem(item.id, true)}
+            className="p-1 rounded-sm hover:bg-black/10 dark:hover:bg-white/10"
+            title="Paste as Plain Text"
+          >
+            <ClipboardPaste size={14} className="text-white cursor-pointer" />
+          </button>
+          <button
+            onClick={() => togglePin(item.id)}
+            className="p-1 rounded-sm hover:bg-black/10 dark:hover:bg-white/10"
+          >
+            <Pin
+              size={14}
+              className={`cursor-pointer ${item.isPinned ? "fill-current text-white" : "text-white"}`}
+            />
+          </button>
+          <button
+            onClick={() => deleteItem(item.id)}
+            className="p-1 rounded-sm hover:bg-red-500/20 text-red-500"
+          >
+            <Trash2 className="text-red-400 cursor-pointer" size={14} />
+          </button>
+        </div>
       </div>
     </div>
   );

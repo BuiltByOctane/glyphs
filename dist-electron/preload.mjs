@@ -1,1 +1,31 @@
-"use strict";const n=require("electron");n.contextBridge.exposeInMainWorld("ipcRenderer",{on(...e){const[r,t]=e;return n.ipcRenderer.on(r,(i,...o)=>t(i,...o))},off(...e){const[r,...t]=e;return n.ipcRenderer.off(r,...t)},send(...e){const[r,...t]=e;return n.ipcRenderer.send(r,...t)},invoke(...e){const[r,...t]=e;return n.ipcRenderer.invoke(r,...t)},getHistory:()=>n.ipcRenderer.invoke("get-history"),togglePin:e=>n.ipcRenderer.invoke("toggle-pin",e),deleteItem:e=>n.ipcRenderer.invoke("delete-item",e),clearHistory:()=>n.ipcRenderer.invoke("clear-history"),pasteItem:(e,r=!1)=>n.ipcRenderer.invoke("paste-item",e,r),onHistoryUpdated:e=>{n.ipcRenderer.on("history-updated",(r,t)=>e(t))}});
+"use strict";
+const electron = require("electron");
+electron.contextBridge.exposeInMainWorld("ipcRenderer", {
+  on(...args) {
+    const [channel, listener] = args;
+    return electron.ipcRenderer.on(
+      channel,
+      (event, ...args2) => listener(event, ...args2)
+    );
+  },
+  off(...args) {
+    const [channel, ...omit] = args;
+    return electron.ipcRenderer.off(channel, ...omit);
+  },
+  send(...args) {
+    const [channel, ...omit] = args;
+    return electron.ipcRenderer.send(channel, ...omit);
+  },
+  invoke(...args) {
+    const [channel, ...omit] = args;
+    return electron.ipcRenderer.invoke(channel, ...omit);
+  },
+  getHistory: () => electron.ipcRenderer.invoke("get-history"),
+  togglePin: (id) => electron.ipcRenderer.invoke("toggle-pin", id),
+  deleteItem: (id) => electron.ipcRenderer.invoke("delete-item", id),
+  clearHistory: () => electron.ipcRenderer.invoke("clear-history"),
+  pasteItem: (id, asPlainText = false) => electron.ipcRenderer.invoke("paste-item", id, asPlainText),
+  onHistoryUpdated: (callback) => {
+    electron.ipcRenderer.on("history-updated", (_event, data) => callback(data));
+  }
+});
