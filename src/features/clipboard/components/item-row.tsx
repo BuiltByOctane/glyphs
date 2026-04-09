@@ -76,9 +76,9 @@ export function ItemRow({ item, index, selectedIndex, onClick }: ItemRowProps) {
         </div>
       </div>
 
-      <div className="relative flex items-center justify-end min-w-32px shrink-0">
+      <div className="relative flex items-center justify-end min-w-[32px] shrink-0">
         {index < 9 && (
-          <span className="text-[10px] font-medium text-white/20 px-1.5 py-0.5 rounded border border-white/5 bg-white/10 group-hover:opacity-0 transition-opacity absolute right-0">
+          <span className="text-[10px] font-medium text-white/20 px-1.5 py-0.5 rounded border border-white/5 bg-white/10 group-hover:opacity-0 transition-opacity absolute right-0 pointer-events-none">
             {"\u2318"}
             <span className="ml-1">{index + 1}</span>
           </span>
