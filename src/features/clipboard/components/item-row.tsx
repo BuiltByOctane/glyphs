@@ -117,7 +117,7 @@ export function ItemRow({
                 <FolderOpen size={14} className="text-white cursor-pointer" />
               </button>
               {isGroupMenuOpen && (
-                <div className="absolute bottom-full right-0 mb-2 w-32 bg-neutral-800 border border-white/10 rounded-lg shadow-xl overflow-hidden z-50 py-1">
+                <div className="absolute z-10000 bottom-full right-0 mb-2 w-32 bg-neutral-800 border border-white/10 rounded-lg shadow-xl overflow-hidden z-50 py-1">
                   <div className="px-2 py-1 flex items-center justify-between text-[10px] text-white/50 uppercase font-semibold">Move to <FolderOpen size={10} /></div>
                   <button
                     className="w-full text-left px-3 py-1.5 text-xs text-white hover:bg-white/10 border-b border-white/5"

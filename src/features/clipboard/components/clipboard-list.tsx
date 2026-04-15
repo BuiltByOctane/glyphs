@@ -1,4 +1,4 @@
-import { BrushCleaning } from "lucide-react";
+import { Stars } from "lucide-react";
 import { ClipboardItem } from "../../../store/use-clipboard-store";
 import { ItemRow } from "./item-row";
 
@@ -24,7 +24,7 @@ export function ClipboardList({
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-neutral-500 text-sm">
-        <BrushCleaning className="mb-3" size={40} />
+        <Stars className="mb-3" size={40} />
         {searchQuery ? "No results found." : "Clipboard history is empty."}
       </div>
     );

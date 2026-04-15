@@ -1,5 +1,9 @@
-const Shortcut = ({ keys, label }: { keys: string[]; label: string }) => (
-  <div className="flex items-center gap-1.5 px-2">
+const Shortcut = ({ keys, label, onClick }: { keys: string[]; label: string; onClick?: () => void }) => (
+  <button 
+    onClick={onClick}
+    className="flex items-center gap-1.5 px-2 hover:bg-white/5 rounded-md transition-colors py-1 cursor-pointer"
+    disabled={!onClick}
+  >
     <div className="flex gap-0.5">
       {keys.map((key) => (
         <kbd
@@ -13,21 +17,19 @@ const Shortcut = ({ keys, label }: { keys: string[]; label: string }) => (
     <span className="text-[10px] font-medium text-white/40 uppercase tracking-wider">
       {label}
     </span>
-  </div>
+  </button>
 );
 
-export const Footer = () => {
+export const Footer = ({ onOpenShortcuts }: { onOpenShortcuts: () => void }) => {
   return (
     <div className="h-10 border-t border-white/10 bg-white/[0.02] backdrop-blur-xl flex items-center justify-center gap-1 px-4 select-none shrink-0">
       <Shortcut keys={["\u2318", "K"]} label="Search" />
       <div className="w-px h-3 bg-white/10 mx-1" />
-      <Shortcut keys={["J", "K"]} label="Nav" />
+      <Shortcut keys={["\u2191", "\u2193"]} label="Nav" />
       <div className="w-px h-3 bg-white/10 mx-1" />
-      <Shortcut keys={["P"]} label="Pin" />
+      <Shortcut keys={["\u21B5"]} label="Select" />
       <div className="w-px h-3 bg-white/10 mx-1" />
-      <Shortcut keys={["Esc"]} label="Mode" />
-      <div className="w-px h-3 bg-white/10 mx-1" />
-      <Shortcut keys={["\u2318", "D"]} label="Del" />
+      <Shortcut keys={["?"]} label="Shortcuts" onClick={onOpenShortcuts} />
     </div>
   );
 };

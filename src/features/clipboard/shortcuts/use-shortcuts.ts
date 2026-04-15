@@ -16,6 +16,8 @@ interface UseShortcutsProps {
   groups: any[];
   activeGroupId: string;
   setActiveGroupId: (id: string) => void;
+  isShortcutsModalOpen: boolean;
+  setIsShortcutsModalOpen: (open: boolean) => void;
 }
 
 export function useShortcuts({
@@ -33,6 +35,8 @@ export function useShortcuts({
   groups,
   activeGroupId,
   setActiveGroupId,
+  isShortcutsModalOpen,
+  setIsShortcutsModalOpen,
 }: UseShortcutsProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -44,6 +48,13 @@ export function useShortcuts({
       if ((e.metaKey || e.ctrlKey) && e.key === "i") {
         e.preventDefault();
         setIsGroupModalOpen(true);
+        return;
+      }
+
+      // ? : show shortcuts
+      if (!isSearchFocused && e.key === "?") {
+        e.preventDefault();
+        setIsShortcutsModalOpen(true);
         return;
       }
 
@@ -154,5 +165,7 @@ export function useShortcuts({
     groups,
     activeGroupId,
     setActiveGroupId,
+    isShortcutsModalOpen,
+    setIsShortcutsModalOpen,
   ]);
 }

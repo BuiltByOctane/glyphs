@@ -8,6 +8,7 @@ import { GroupModal } from "./features/clipboard/components/group-modal";
 import { Footer } from "./features/clipboard/components/footer";
 import { useShortcuts } from "./features/clipboard/shortcuts/use-shortcuts";
 import { QrModal } from "./features/clipboard/components/qr-modal";
+import { ShortcutsModal } from "./features/clipboard/components/shortcuts-modal";
 
 export default function App() {
   const {
@@ -28,6 +29,7 @@ export default function App() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [qrContent, setQrContent] = useState<string | null>(null);
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
+  const [isShortcutsModalOpen, setIsShortcutsModalOpen] = useState(false);
   const [editGroup, setEditGroup] = useState<any | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -66,18 +68,21 @@ export default function App() {
     groups,
     activeGroupId,
     setActiveGroupId,
+    isShortcutsModalOpen,
+    setIsShortcutsModalOpen,
   });
 
   return (
     <div className="flex flex-col h-screen w-screen bg-transperant rounded-2xl border-white/20 dark:border-white/10 overflow-hidden text-foreground">
-      <SearchBar
-        ref={searchRef}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        showClearButton={items.length > 0}
-        onClearHistory={clearHistory}
-      />
       <div className="border-t border-white/20 flex-1 overflow-y-auto no-drag flex flex-col">
+        <SearchBar
+          ref={searchRef}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          showClearButton={items.length > 0}
+          onClearHistory={clearHistory}
+        />
+
         <GroupChips
           onAddGroup={() => {
             setEditGroup(null);
@@ -99,7 +104,8 @@ export default function App() {
           onShowQr={setQrContent}
         />
       </div>
-      <Footer />
+
+      <Footer onOpenShortcuts={() => setIsShortcutsModalOpen(true)} />
 
       {qrContent && (
         <QrModal content={qrContent} onClose={() => setQrContent(null)} />
@@ -112,6 +118,9 @@ export default function App() {
             setEditGroup(null);
           }}
         />
+      )}
+      {isShortcutsModalOpen && (
+        <ShortcutsModal onClose={() => setIsShortcutsModalOpen(false)} />
       )}
     </div>
   );

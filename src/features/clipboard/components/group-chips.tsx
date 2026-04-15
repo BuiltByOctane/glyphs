@@ -23,7 +23,7 @@ export function GroupChips({ onAddGroup, onEditGroup }: GroupChipsProps) {
   };
 
   return (
-    <div className="flex items-center gap-1 px-3 py-2 min-h-12 max-h-12 overflow-x-auto no-scrollbar" ref={scrollRef}>
+    <div className="flex items-center border-t-1 border-white/20 gap-1 px-3 py-2 min-h-12 max-h-12 overflow-x-auto no-scrollbar" ref={scrollRef}>
       <button
         onClick={() => setActiveGroupId("all")}
         className={cn(
