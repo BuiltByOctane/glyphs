@@ -1,5 +1,3 @@
-import React from "react";
-
 const Shortcut = ({ keys, label }: { keys: string[]; label: string }) => (
   <div className="flex items-center gap-1.5 px-2">
     <div className="flex gap-0.5">

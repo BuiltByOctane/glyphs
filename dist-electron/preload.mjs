@@ -27,5 +27,10 @@ electron.contextBridge.exposeInMainWorld("ipcRenderer", {
   pasteItem: (id, asPlainText = false) => electron.ipcRenderer.invoke("paste-item", id, asPlainText),
   onHistoryUpdated: (callback) => {
     electron.ipcRenderer.on("history-updated", (_event, data) => callback(data));
-  }
+  },
+  getGroups: () => electron.ipcRenderer.invoke("get-groups"),
+  addGroup: (group) => electron.ipcRenderer.invoke("add-group", group),
+  updateGroup: (group) => electron.ipcRenderer.invoke("update-group", group),
+  deleteGroup: (id) => electron.ipcRenderer.invoke("delete-group", id),
+  setItemGroup: (itemId, groupId) => electron.ipcRenderer.invoke("set-item-group", itemId, groupId)
 });

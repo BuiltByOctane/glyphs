@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Pin,
   Trash2,
@@ -6,6 +6,7 @@ import {
   Image as ImageIcon,
   ClipboardPaste,
   QrCode,
+  FolderOpen
 } from "lucide-react";
 import {
   useClipboardStore,
@@ -28,7 +29,8 @@ export function ItemRow({
   onClick,
   onShowQr,
 }: ItemRowProps) {
-  const { togglePin, deleteItem, pasteItem } = useClipboardStore();
+  const { togglePin, deleteItem, pasteItem, groups, setItemGroup } = useClipboardStore();
+  const [isGroupMenuOpen, setIsGroupMenuOpen] = useState(false);
   const isSelected = index === selectedIndex;
   const rowRef = useRef<HTMLDivElement>(null);
 
@@ -41,6 +43,7 @@ export function ItemRow({
   return (
     <div
       ref={rowRef}
+      onMouseLeave={() => setIsGroupMenuOpen(false)}
       className={cn(
         "group cursor-pointer hover:bg-white/10 flex items-center justify-between rounded-lg py-1 px-2 mx-2 transition-colors text-sm mb-1.5",
         isSelected ? "bg-white/15 text-white" : "bg-white/5 text-foreground",
@@ -93,10 +96,51 @@ export function ItemRow({
         )}
         <div
           className={cn(
-            "flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity bg-transparent px-1",
+            "flex items-center gap-2 transition-opacity bg-transparent px-1 relative",
+            isGroupMenuOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
           )}
           onClick={(e) => e.stopPropagation()}
         >
+          {groups.length > 0 && (
+            <div className="relative">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsGroupMenuOpen(!isGroupMenuOpen);
+                }}
+                className={cn(
+                  "p-1 rounded-sm transition-colors",
+                  isGroupMenuOpen ? "bg-white/20 text-white" : "hover:bg-black/10 dark:hover:bg-white/10"
+                )}
+                title="Move to Group"
+              >
+                <FolderOpen size={14} className="text-white cursor-pointer" />
+              </button>
+              {isGroupMenuOpen && (
+                <div className="absolute bottom-full right-0 mb-2 w-32 bg-neutral-800 border border-white/10 rounded-lg shadow-xl overflow-hidden z-50 py-1">
+                  <div className="px-2 py-1 flex items-center justify-between text-[10px] text-white/50 uppercase font-semibold">Move to <FolderOpen size={10} /></div>
+                  <button
+                    className="w-full text-left px-3 py-1.5 text-xs text-white hover:bg-white/10 border-b border-white/5"
+                    onClick={() => { setItemGroup(item.id, undefined); setIsGroupMenuOpen(false); }}
+                  >
+                    Unassigned
+                  </button>
+                  {groups.map(g => (
+                    <button
+                      key={g.id}
+                      className={cn(
+                        "w-full text-left px-3 py-1.5 text-xs text-white hover:bg-white/10 flex items-center gap-2",
+                        item.groupId === g.id && "bg-white/5"
+                      )}
+                      onClick={() => { setItemGroup(item.id, g.id); setIsGroupMenuOpen(false); }}
+                    >
+                      {g.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
           {item.type === "text" && (
             <button
               onClick={() => onShowQr(item.content)}

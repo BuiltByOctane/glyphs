@@ -2,12 +2,19 @@ import Store from "electron-store";
 
 export type ClipboardItemType = "text" | "image";
 
+export interface Group {
+  id: string;
+  name: string;
+  icon: string;
+}
+
 export interface ClipboardItem {
   id: string;
   type: ClipboardItemType;
   content: string;
   timestamp: number;
   isPinned: boolean;
+  groupId?: string;
 }
 
 interface StoreSchema {
@@ -15,6 +22,7 @@ interface StoreSchema {
   settings: {
     maxHistorySize: number;
   };
+  groups: Group[];
 }
 
 const store = new Store<StoreSchema>({
@@ -33,6 +41,10 @@ const store = new Store<StoreSchema>({
           type: "number",
         },
       },
+    },
+    groups: {
+      type: "array",
+      default: [],
     },
   },
 });

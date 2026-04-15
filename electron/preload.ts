@@ -29,4 +29,10 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
   onHistoryUpdated: (callback: (data: any) => void) => {
     ipcRenderer.on("history-updated", (_event, data) => callback(data));
   },
+  getGroups: () => ipcRenderer.invoke("get-groups"),
+  addGroup: (group: any) => ipcRenderer.invoke("add-group", group),
+  updateGroup: (group: any) => ipcRenderer.invoke("update-group", group),
+  deleteGroup: (id: string) => ipcRenderer.invoke("delete-group", id),
+  setItemGroup: (itemId: string, groupId?: string) => 
+    ipcRenderer.invoke("set-item-group", itemId, groupId),
 });

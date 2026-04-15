@@ -1,5 +1,5 @@
 import { ipcMain, clipboard, nativeImage, BrowserWindow } from "electron";
-import store from "./store";
+import store, { Group } from "./store";
 import { exec } from "child_process";
 
 export function setupIpcHandlers(mainWindow: BrowserWindow) {
@@ -59,5 +59,61 @@ export function setupIpcHandlers(mainWindow: BrowserWindow) {
         );
       }, 100);
     }
+  });
+
+  ipcMain.handle("get-groups", () => {
+    return store.get("groups") || [];
+  });
+
+  ipcMain.handle("add-group", (_, group: Group) => {
+    const groups = store.get("groups") || [];
+    groups.push(group);
+    store.set("groups", groups);
+    return groups;
+  });
+
+  ipcMain.handle("update-group", (_, updatedGroup: Group) => {
+    const groups = store.get("groups") || [];
+    const index = groups.findIndex((g) => g.id === updatedGroup.id);
+    if (index !== -1) {
+      groups[index] = updatedGroup;
+      store.set("groups", groups);
+    }
+    return groups;
+  });
+
+  ipcMain.handle("delete-group", (_, id: string) => {
+    let groups = store.get("groups") || [];
+    groups = groups.filter((g) => g.id !== id);
+    store.set("groups", groups);
+
+    const history = store.get("history") || [];
+    let updatedHistory = false;
+    history.forEach((i) => {
+      if (i.groupId === id) {
+        delete i.groupId;
+        updatedHistory = true;
+      }
+    });
+    if (updatedHistory) {
+      store.set("history", history);
+      mainWindow.webContents.send("history-updated", history);
+    }
+    return groups;
+  });
+
+  ipcMain.handle("set-item-group", (_, itemId: string, groupId?: string) => {
+    const history = store.get("history") || [];
+    const index = history.findIndex((i) => i.id === itemId);
+    if (index !== -1) {
+      if (groupId) {
+        history[index].groupId = groupId;
+      } else {
+        delete history[index].groupId;
+      }
+      store.set("history", history);
+      mainWindow.webContents.send("history-updated", history);
+    }
+    return history;
   });
 }

@@ -11,6 +11,11 @@ interface UseShortcutsProps {
   pasteItem: (id: string, asPlainText?: boolean) => Promise<void>;
   deleteItem: (id: string) => Promise<void>;
   togglePin: (id: string) => Promise<void>;
+  isGroupModalOpen: boolean;
+  setIsGroupModalOpen: (open: boolean) => void;
+  groups: any[];
+  activeGroupId: string;
+  setActiveGroupId: (id: string) => void;
 }
 
 export function useShortcuts({
@@ -23,10 +28,24 @@ export function useShortcuts({
   pasteItem,
   deleteItem,
   togglePin,
+  isGroupModalOpen,
+  setIsGroupModalOpen,
+  groups,
+  activeGroupId,
+  setActiveGroupId,
 }: UseShortcutsProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (isGroupModalOpen) return;
+
       const isSearchFocused = document.activeElement === searchRef.current;
+
+      // cmd + i: create group
+      if ((e.metaKey || e.ctrlKey) && e.key === "i") {
+        e.preventDefault();
+        setIsGroupModalOpen(true);
+        return;
+      }
 
       // cmd + k: focus search
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -97,6 +116,16 @@ export function useShortcuts({
       } else if (!isSearchFocused && e.key === "k") {
         e.preventDefault();
         setSelectedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+      } else if (!isSearchFocused && e.key === "h") {
+        e.preventDefault();
+        const groupIds = ["all", ...groups.map((g) => g.id)];
+        const currentIndex = groupIds.indexOf(activeGroupId);
+        if (currentIndex > 0) setActiveGroupId(groupIds[currentIndex - 1]);
+      } else if (!isSearchFocused && e.key === "l") {
+        e.preventDefault();
+        const groupIds = ["all", ...groups.map((g) => g.id)];
+        const currentIndex = groupIds.indexOf(activeGroupId);
+        if (currentIndex < groupIds.length - 1) setActiveGroupId(groupIds[currentIndex + 1]);
       }
       // enter to paste
       else if (e.key === "Enter") {
@@ -120,5 +149,10 @@ export function useShortcuts({
     pasteItem,
     deleteItem,
     togglePin,
+    isGroupModalOpen,
+    setIsGroupModalOpen,
+    groups,
+    activeGroupId,
+    setActiveGroupId,
   ]);
 }
