@@ -1,5 +1,8 @@
 import { useEffect, RefObject } from "react";
-import { ClipboardItem } from "../../../store/use-clipboard-store";
+import {
+  ClipboardItem,
+  Group,
+} from "../../../store/use-clipboard-store";
 
 interface UseShortcutsProps {
   displayItems: ClipboardItem[];
@@ -13,7 +16,7 @@ interface UseShortcutsProps {
   togglePin: (id: string) => Promise<void>;
   isGroupModalOpen: boolean;
   setIsGroupModalOpen: (open: boolean) => void;
-  groups: any[];
+  groups: Group[];
   activeGroupId: string;
   setActiveGroupId: (id: string) => void;
   isShortcutsModalOpen: boolean;

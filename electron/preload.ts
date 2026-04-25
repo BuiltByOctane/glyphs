@@ -1,4 +1,5 @@
 import { ipcRenderer, contextBridge } from "electron";
+import type { ClipboardItem, Group } from "./store";
 
 contextBridge.exposeInMainWorld("ipcRenderer", {
   on(...args: Parameters<typeof ipcRenderer.on>) {
@@ -26,12 +27,12 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
   clearHistory: () => ipcRenderer.invoke("clear-history"),
   pasteItem: (id: string, asPlainText = false) =>
     ipcRenderer.invoke("paste-item", id, asPlainText),
-  onHistoryUpdated: (callback: (data: any) => void) => {
+  onHistoryUpdated: (callback: (data: ClipboardItem[]) => void) => {
     ipcRenderer.on("history-updated", (_event, data) => callback(data));
   },
   getGroups: () => ipcRenderer.invoke("get-groups"),
-  addGroup: (group: any) => ipcRenderer.invoke("add-group", group),
-  updateGroup: (group: any) => ipcRenderer.invoke("update-group", group),
+  addGroup: (group: Group) => ipcRenderer.invoke("add-group", group),
+  updateGroup: (group: Group) => ipcRenderer.invoke("update-group", group),
   deleteGroup: (id: string) => ipcRenderer.invoke("delete-group", id),
   setItemGroup: (itemId: string, groupId?: string) => 
     ipcRenderer.invoke("set-item-group", itemId, groupId),

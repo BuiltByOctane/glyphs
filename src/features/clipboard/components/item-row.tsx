@@ -6,7 +6,7 @@ import {
   Image as ImageIcon,
   ClipboardPaste,
   QrCode,
-  FolderOpen
+  FolderOpen,
 } from "lucide-react";
 import {
   useClipboardStore,
@@ -29,7 +29,8 @@ export function ItemRow({
   onClick,
   onShowQr,
 }: ItemRowProps) {
-  const { togglePin, deleteItem, pasteItem, groups, setItemGroup } = useClipboardStore();
+  const { togglePin, deleteItem, pasteItem, groups, setItemGroup } =
+    useClipboardStore();
   const [isGroupMenuOpen, setIsGroupMenuOpen] = useState(false);
   const isSelected = index === selectedIndex;
   const rowRef = useRef<HTMLDivElement>(null);
@@ -45,12 +46,12 @@ export function ItemRow({
       ref={rowRef}
       onMouseLeave={() => setIsGroupMenuOpen(false)}
       className={cn(
-        "group cursor-pointer hover:bg-white/10 flex items-center justify-between rounded-lg py-1 px-2 mx-2 transition-colors text-sm mb-1.5",
+        "group mx-2 mb-1.5 flex min-h-[3.25rem] cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white/10",
         isSelected ? "bg-white/15 text-white" : "bg-white/5 text-foreground",
       )}
       onClick={onClick}
     >
-      <div className="flex items-center gap-3 overflow-hidden py-2 px-3">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
         {item.type === "text" ? (
           <Type
             size={16}
@@ -68,11 +69,11 @@ export function ItemRow({
             )}
           />
         )}
-        <div className="truncate flex-1 max-w-400">
+        <div className="min-w-0 flex-1">
           {item.type === "text" ? (
             <span
               className={cn(
-                "whitespace-pre-wrap line-clamp-1",
+                "block truncate",
                 isSelected ? "text-white" : "dark:text-white text-black",
               )}
             >
@@ -80,24 +81,26 @@ export function ItemRow({
             </span>
           ) : (
             <div
-              className="h-10 w-24 bg-cover bg-center rounded-sm"
+              className="h-10 w-24 rounded bg-cover bg-center"
               style={{ backgroundImage: `url(${item.content})` }}
             />
           )}
         </div>
       </div>
 
-      <div className="relative flex items-center justify-end min-w-32 shrink-0">
+      <div className="relative flex h-8 w-[9.5rem] max-w-[45%] shrink-0 items-center justify-end">
         {index < 9 && (
-          <span className="text-[10px] font-medium text-white/20 px-1.5 py-0.5 rounded border border-white/5 bg-white/10 group-hover:opacity-0 transition-opacity absolute right-0 pointer-events-none">
+          <span className="pointer-events-none absolute right-0 rounded border border-white/5 bg-white/10 px-1.5 py-0.5 text-[10px] font-medium text-white/25 transition-opacity group-hover:opacity-0">
             {"\u2318"}
             <span className="ml-1">{index + 1}</span>
           </span>
         )}
         <div
           className={cn(
-            "flex items-center gap-2 transition-opacity bg-transparent px-1 relative",
-            isGroupMenuOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+            "relative flex items-center gap-1 bg-transparent transition-opacity",
+            isGroupMenuOpen
+              ? "opacity-100"
+              : "pointer-events-none opacity-0 group-hover:pointer-events-auto group-hover:opacity-100",
           )}
           onClick={(e) => e.stopPropagation()}
         >
@@ -109,30 +112,43 @@ export function ItemRow({
                   setIsGroupMenuOpen(!isGroupMenuOpen);
                 }}
                 className={cn(
-                  "p-1 rounded-sm transition-colors",
-                  isGroupMenuOpen ? "bg-white/20 text-white" : "hover:bg-black/10 dark:hover:bg-white/10"
+                  "flex h-7 w-7 items-center justify-center rounded-md transition-colors",
+                  isGroupMenuOpen
+                    ? "bg-white/20 text-white"
+                    : "hover:bg-black/10 dark:hover:bg-white/10",
                 )}
                 title="Move to Group"
               >
-                <FolderOpen size={14} className="text-white cursor-pointer" />
+                <FolderOpen
+                  size={14}
+                  className="cursor-pointer text-black/70 dark:text-white"
+                />
               </button>
               {isGroupMenuOpen && (
-                <div className="absolute z-10000 bottom-full right-0 mb-2 w-32 bg-neutral-800 border border-white/10 rounded-lg shadow-xl overflow-hidden z-50 py-1">
-                  <div className="px-2 py-1 flex items-center justify-between text-[10px] text-white/50 uppercase font-semibold">Move to <FolderOpen size={10} /></div>
+                <div className="absolute bottom-full right-0 z-[100] mb-2 max-h-48 w-40 overflow-y-auto rounded-lg border border-white/10 bg-neutral-800 py-1 shadow-xl">
+                  <div className="flex items-center justify-between px-2 py-1 text-[10px] font-semibold uppercase text-white/50">
+                    Move to <FolderOpen size={10} />
+                  </div>
                   <button
                     className="w-full text-left px-3 py-1.5 text-xs text-white hover:bg-white/10 border-b border-white/5"
-                    onClick={() => { setItemGroup(item.id, undefined); setIsGroupMenuOpen(false); }}
+                    onClick={() => {
+                      setItemGroup(item.id, undefined);
+                      setIsGroupMenuOpen(false);
+                    }}
                   >
                     Unassigned
                   </button>
-                  {groups.map(g => (
+                  {groups.map((g) => (
                     <button
                       key={g.id}
                       className={cn(
                         "w-full text-left px-3 py-1.5 text-xs text-white hover:bg-white/10 flex items-center gap-2",
-                        item.groupId === g.id && "bg-white/5"
+                        item.groupId === g.id && "bg-white/5",
                       )}
-                      onClick={() => { setItemGroup(item.id, g.id); setIsGroupMenuOpen(false); }}
+                      onClick={() => {
+                        setItemGroup(item.id, g.id);
+                        setIsGroupMenuOpen(false);
+                      }}
                     >
                       {g.name}
                     </button>
@@ -144,32 +160,41 @@ export function ItemRow({
           {item.type === "text" && (
             <button
               onClick={() => onShowQr(item.content)}
-              className="p-1 rounded-sm hover:bg-black/10 dark:hover:bg-white/10"
+              className="flex h-7 w-7 items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10"
               title="Generate QR Code"
             >
-              <QrCode size={14} className="text-white cursor-pointer" />
+              <QrCode
+                size={14}
+                className="cursor-pointer text-black/70 dark:text-white"
+              />
             </button>
           )}
           <button
             onClick={() => pasteItem(item.id, true)}
-            className="p-1 rounded-sm hover:bg-black/10 dark:hover:bg-white/10"
+            className="flex h-7 w-7 items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10"
             title="Paste as Plain Text"
           >
-            <ClipboardPaste size={14} className="text-white cursor-pointer" />
+            <ClipboardPaste
+              size={14}
+              className="cursor-pointer text-black/70 dark:text-white"
+            />
           </button>
           <button
             onClick={() => togglePin(item.id)}
-            className="p-1 rounded-sm hover:bg-black/10 dark:hover:bg-white/10"
+            className="flex h-7 w-7 items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10"
             title="Pin Item"
           >
             <Pin
               size={14}
-              className={`cursor-pointer ${item.isPinned ? "fill-current text-white" : "text-white"}`}
+              className={cn(
+                "cursor-pointer text-black/70 dark:text-white",
+                item.isPinned && "fill-current text-black dark:text-white",
+              )}
             />
           </button>
           <button
             onClick={() => deleteItem(item.id)}
-            className="p-1 rounded-sm hover:bg-red-500/20 text-red-500"
+            className="flex h-7 w-7 items-center justify-center rounded-md text-red-500 hover:bg-red-500/20"
             title="Delete Item"
           >
             <Trash2 className="text-red-400 cursor-pointer" size={14} />

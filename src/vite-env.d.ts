@@ -1,17 +1,37 @@
 /// <reference types="vite/client" />
 
+type GlyphClipboardItemType = "text" | "image";
+
+interface GlyphClipboardItem {
+  id: string;
+  type: GlyphClipboardItemType;
+  content: string;
+  timestamp: number;
+  isPinned: boolean;
+  groupId?: string;
+}
+
+interface GlyphGroup {
+  id: string;
+  name: string;
+  icon: string;
+}
+
 interface Window {
   ipcRenderer: {
-    getHistory: () => Promise<any[]>;
-    togglePin: (id: string) => Promise<any[]>;
-    deleteItem: (id: string) => Promise<any[]>;
-    clearHistory: () => Promise<any[]>;
+    getHistory: () => Promise<GlyphClipboardItem[]>;
+    togglePin: (id: string) => Promise<GlyphClipboardItem[]>;
+    deleteItem: (id: string) => Promise<GlyphClipboardItem[]>;
+    clearHistory: () => Promise<GlyphClipboardItem[]>;
     pasteItem: (id: string, asPlainText?: boolean) => Promise<void>;
-    onHistoryUpdated: (callback: (data: any) => void) => void;
-    getGroups: () => Promise<any[]>;
-    addGroup: (group: any) => Promise<any[]>;
-    updateGroup: (group: any) => Promise<any[]>;
-    deleteGroup: (id: string) => Promise<any[]>;
-    setItemGroup: (itemId: string, groupId?: string) => Promise<any[]>;
+    onHistoryUpdated: (callback: (data: GlyphClipboardItem[]) => void) => void;
+    getGroups: () => Promise<GlyphGroup[]>;
+    addGroup: (group: GlyphGroup) => Promise<GlyphGroup[]>;
+    updateGroup: (group: GlyphGroup) => Promise<GlyphGroup[]>;
+    deleteGroup: (id: string) => Promise<GlyphGroup[]>;
+    setItemGroup: (
+      itemId: string,
+      groupId?: string,
+    ) => Promise<GlyphClipboardItem[]>;
   };
 }

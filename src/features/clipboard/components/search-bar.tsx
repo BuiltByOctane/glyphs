@@ -31,15 +31,15 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
     };
 
     return (
-      <div className="flex items-center px-4 py-3 dark:border-slate-800 sticky top-0 bg-transparent z-10 window-drag">
+      <div className="window-drag z-10 flex shrink-0 items-center gap-2 border-b border-white/10 bg-white/[0.03] px-4 py-3 backdrop-blur-xl">
         <Search
           size={20}
-          className="dark:text-white/80 text-black/60 no-drag shrink-0"
+          className="no-drag shrink-0 text-black/60 dark:text-white/80"
         />
         <input
           ref={ref}
           autoFocus
-          className="w-full bg-transparent border-none outline-none text-dark dark:text-slate-200 px-3 py-1 font-regular placeholder:text-white/50 no-drag"
+          className="no-drag min-w-0 flex-1 border-none bg-transparent px-1 py-1 text-sm text-black outline-none placeholder:text-black/40 dark:text-slate-200 dark:placeholder:text-white/45"
           placeholder="Search"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -48,13 +48,13 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
           <button
             onClick={handleClearClick}
             className={cn(
-              "text-xs px-3 py-1 rounded-full transition-all no-drag cursor-pointer whitespace-nowrap",
+              "no-drag h-7 shrink-0 cursor-pointer whitespace-nowrap rounded-md px-2.5 text-xs transition-all",
               isConfirming
-                ? "bg-red-500/20 text-red-500 hover:bg-red-500/30 font-semibold"
-                : "dark:text-white/60 text-black hover:text-red-500 active:bg-white/10",
+                ? "bg-red-500/20 font-semibold text-red-500 hover:bg-red-500/30"
+                : "text-black/65 hover:bg-black/5 hover:text-red-500 active:bg-black/10 dark:text-white/60 dark:hover:bg-white/10",
             )}
           >
-            {isConfirming ? "Clear All History?" : "Clear"}
+            {isConfirming ? "Confirm Clear" : "Clear"}
           </button>
         )}
       </div>

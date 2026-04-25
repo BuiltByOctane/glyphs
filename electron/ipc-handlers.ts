@@ -8,7 +8,7 @@ export function setupIpcHandlers(mainWindow: BrowserWindow) {
   });
 
   ipcMain.handle("toggle-pin", (_, id: string) => {
-    let history = store.get("history") || [];
+    const history = store.get("history") || [];
     const index = history.findIndex((i) => i.id === id);
     if (index !== -1) {
       history[index].isPinned = !history[index].isPinned;

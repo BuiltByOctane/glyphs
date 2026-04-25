@@ -1,20 +1,28 @@
-const Shortcut = ({ keys, label, onClick }: { keys: string[]; label: string; onClick?: () => void }) => (
-  <button 
+const Shortcut = ({
+  keys,
+  label,
+  onClick,
+}: {
+  keys: string[];
+  label: string;
+  onClick?: () => void;
+}) => (
+  <button
     onClick={onClick}
-    className="flex items-center gap-1.5 px-2 hover:bg-white/5 rounded-md transition-colors py-1 cursor-pointer"
+    className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 transition-colors hover:bg-white/5 disabled:cursor-default"
     disabled={!onClick}
   >
-    <div className="flex gap-0.5">
+    <div className="flex shrink-0 gap-0.5">
       {keys.map((key) => (
         <kbd
           key={key}
-          className="min-w-[1.25rem] h-5 px-1 flex items-center justify-center rounded bg-white/10 border border-white/10 text-[10px] font-medium text-white/70 uppercase"
+          className="flex h-5 min-w-[1.25rem] items-center justify-center rounded border border-white/10 bg-white/10 px-1 text-[10px] font-medium uppercase text-white/70"
         >
           {key}
         </kbd>
       ))}
     </div>
-    <span className="text-[10px] font-medium text-white/40 uppercase tracking-wider">
+    <span className="whitespace-nowrap text-[10px] font-medium uppercase tracking-wider text-white/40">
       {label}
     </span>
   </button>
@@ -22,7 +30,7 @@ const Shortcut = ({ keys, label, onClick }: { keys: string[]; label: string; onC
 
 export const Footer = ({ onOpenShortcuts }: { onOpenShortcuts: () => void }) => {
   return (
-    <div className="h-10 border-t border-white/10 bg-white/[0.02] backdrop-blur-xl flex items-center justify-center gap-1 px-4 select-none shrink-0">
+    <div className="no-scrollbar flex h-10 shrink-0 select-none items-center justify-start gap-1 overflow-x-auto border-t border-white/10 bg-white/[0.02] px-4 backdrop-blur-xl">
       <Shortcut keys={["\u2318", "K"]} label="Search" />
       <div className="w-px h-3 bg-white/10 mx-1" />
       <Shortcut keys={["\u2191", "\u2193"]} label="Nav" />

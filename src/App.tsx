@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useClipboardStore } from "./store/use-clipboard-store";
+import { type Group, useClipboardStore } from "./store/use-clipboard-store";
 import { SearchBar } from "./features/clipboard/components/search-bar";
 import { ClipboardList } from "./features/clipboard/components/clipboard-list";
 import { GroupChips } from "./features/clipboard/components/group-chips";
@@ -30,7 +30,7 @@ export default function App() {
   const [qrContent, setQrContent] = useState<string | null>(null);
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
   const [isShortcutsModalOpen, setIsShortcutsModalOpen] = useState(false);
-  const [editGroup, setEditGroup] = useState<any | null>(null);
+  const [editGroup, setEditGroup] = useState<Group | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -73,8 +73,8 @@ export default function App() {
   });
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-transperant rounded-2xl border-white/20 dark:border-white/10 overflow-hidden text-foreground">
-      <div className="border-t border-white/20 flex-1 overflow-y-auto no-drag flex flex-col">
+    <div className="flex h-screen w-screen flex-col overflow-hidden rounded-2xl border border-white/20 bg-transparent text-foreground dark:border-white/10">
+      <div className="no-drag flex min-h-0 flex-1 flex-col overflow-hidden border-t border-white/20">
         <SearchBar
           ref={searchRef}
           searchQuery={searchQuery}

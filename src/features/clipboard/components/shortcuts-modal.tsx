@@ -32,23 +32,28 @@ export function ShortcutsModal({ onClose }: ShortcutsModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-neutral-900 border border-white/10 rounded-xl shadow-2xl w-full max-w-sm flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200 max-h-[95%]">
+      <div className="flex max-h-[calc(100vh-2rem)] w-full max-w-sm flex-col overflow-hidden rounded-lg border border-white/10 bg-neutral-900 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
           <h2 className="text-sm font-semibold text-white">Keyboard Shortcuts</h2>
-          <button onClick={onClose} className="text-white/50 hover:text-white p-1 cursor-pointer transition-colors">
+          <button
+            onClick={onClose}
+            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-white/50 transition-colors hover:bg-white/10 hover:text-white"
+          >
             <X size={16} />
           </button>
         </div>
 
-        <div className="p-4 space-y-3 overflow-y-scroll no-scrollbar">
+        <div className="no-scrollbar min-h-0 space-y-3 overflow-y-auto p-4">
           {SHORTCUTS.map((shortcut, idx) => (
-            <div key={idx} className="flex items-center justify-between">
-              <span className="text-sm text-white/70">{shortcut.label}</span>
-              <div className="flex gap-1">
+            <div key={idx} className="flex items-center justify-between gap-4">
+              <span className="min-w-0 text-sm text-white/70">
+                {shortcut.label}
+              </span>
+              <div className="flex flex-wrap justify-end gap-1">
                 {shortcut.keys.map((key) => (
                   <kbd
                     key={key}
-                    className="min-w-[1.5rem] h-6 px-1.5 flex items-center justify-center rounded bg-white/10 border border-white/10 text-xs font-medium text-white/90 uppercase shadow-sm"
+                    className="flex h-6 min-w-[1.5rem] items-center justify-center rounded border border-white/10 bg-white/10 px-1.5 text-xs font-medium uppercase text-white/90 shadow-sm"
                   >
                     {key}
                   </kbd>

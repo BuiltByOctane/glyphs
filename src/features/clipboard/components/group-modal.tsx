@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import type { ComponentType } from "react";
 import { X } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
@@ -10,6 +11,9 @@ const ICONS = [
   "Terminal", "Heart", "List", "Hash", "Layers",
   "Inbox", "Globe", "Cloud", "Box", "Cpu"
 ];
+
+type ModalIcon = ComponentType<{ size?: number; className?: string }>;
+const iconMap = LucideIcons as unknown as Record<string, ModalIcon>;
 
 interface GroupModalProps {
   onClose: () => void;
@@ -47,21 +51,24 @@ export function GroupModal({ onClose, editGroup }: GroupModalProps) {
       deleteGroup(editGroup.id);
       onClose();
     }
-  }
+  };
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-neutral-900 border border-white/10 rounded-xl shadow-2xl w-full max-w-sm flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="flex max-h-[calc(100vh-2rem)] w-full max-w-sm flex-col overflow-hidden rounded-lg border border-white/10 bg-neutral-900 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
           <h2 className="text-sm font-semibold text-white">
             {editGroup ? "Edit Group" : "Create New Group"}
           </h2>
-          <button onClick={onClose} className="text-white/50 hover:text-white transition-colors">
+          <button
+            onClick={onClose}
+            className="flex h-7 w-7 items-center justify-center rounded-md text-white/50 transition-colors hover:bg-white/10 hover:text-white"
+          >
             <X size={16} />
           </button>
         </div>
 
-        <div className="p-4 space-y-4">
+        <div className="min-h-0 space-y-4 overflow-y-auto p-4">
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-white/70 uppercase tracking-wider">Name</label>
             <input
@@ -76,7 +83,7 @@ export function GroupModal({ onClose, editGroup }: GroupModalProps) {
                 }
               }}
               placeholder="e.g. Work, Ideas, Snippets..."
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-white/30"
+              className="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-white/30"
             />
           </div>
 
@@ -84,15 +91,16 @@ export function GroupModal({ onClose, editGroup }: GroupModalProps) {
             <label className="text-xs font-medium text-white/70 uppercase tracking-wider">Icon</label>
             <div className="grid grid-cols-5 gap-2">
               {ICONS.map((iconName) => {
-                // @ts-ignore
-                const IconComponent = LucideIcons[iconName] || LucideIcons.Folder;
+                const IconComponent = iconMap[iconName] || LucideIcons.Folder;
                 return (
                   <button
                     key={iconName}
                     onClick={() => setIcon(iconName)}
                     className={cn(
-                      "p-2 rounded-lg flex items-center justify-center transition-all",
-                      icon === iconName ? "bg-white/20 text-white shadow-sm ring-1 ring-white/50" : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/80"
+                      "flex h-9 items-center justify-center rounded-md transition-all",
+                      icon === iconName
+                        ? "bg-white/20 text-white shadow-sm ring-1 ring-white/50"
+                        : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/80",
                     )}
                     title={iconName}
                   >
@@ -108,7 +116,7 @@ export function GroupModal({ onClose, editGroup }: GroupModalProps) {
           {editGroup ? (
             <button
               onClick={handleDelete}
-              className="flex items-center gap-1.5 text-sm font-medium text-red-500 hover:text-red-400 px-4 py-1.5 rounded-lg hover:bg-red-500/10 bg-red-500/5 cursor-pointer transition-colors"
+              className="flex h-8 cursor-pointer items-center gap-1.5 rounded-md bg-red-500/5 px-4 text-sm font-medium text-red-500 transition-colors hover:bg-red-500/10 hover:text-red-400"
             >
               Delete
             </button>
@@ -119,7 +127,7 @@ export function GroupModal({ onClose, editGroup }: GroupModalProps) {
           <button
             onClick={handleSave}
             disabled={!name.trim()}
-            className="flex items-center justify-center gap-1.5 bg-white text-black px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-white/90 disabled:opacity-50 transition-colors"
+            className="flex h-8 items-center justify-center gap-1.5 rounded-md bg-white px-4 text-sm font-medium text-black transition-colors hover:bg-white/90 disabled:opacity-50"
           >
             {editGroup ? "Save" : "Create"}
           </button>

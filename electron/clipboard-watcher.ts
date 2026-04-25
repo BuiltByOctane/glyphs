@@ -19,7 +19,7 @@ export function startClipboardWatcher(mainWindow: BrowserWindow) {
 
       let isChanged = false;
       let newItem: ClipboardItem | null = null;
-      let maxHistorySize = store.get("settings.maxHistorySize") || 100;
+      const maxHistorySize = store.get("settings.maxHistorySize") || 100;
 
       if (currentText && currentText !== previousText) {
         previousText = currentText;

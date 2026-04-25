@@ -23,7 +23,7 @@ export function ClipboardList({
 }: ClipboardListProps) {
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-neutral-500 text-sm">
+      <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-6 text-center text-sm text-neutral-500">
         <Stars className="mb-3" size={40} />
         {searchQuery ? "No results found." : "Clipboard history is empty."}
       </div>
@@ -31,10 +31,10 @@ export function ClipboardList({
   }
 
   return (
-    <>
+    <div className="no-scrollbar min-h-0 flex-1 overflow-y-auto py-2">
       {pinnedItems.length > 0 && (
         <div className="mb-2">
-          <div className="px-4 py-1 text-xs font-semibold dark:text-white/70 text-black uppercase tracking-wider mb-1">
+          <div className="mb-1 px-4 py-1 text-xs font-semibold uppercase tracking-wider text-black/70 dark:text-white/70">
             Pinned
           </div>
           {pinnedItems.map((item, idx) => (
@@ -52,7 +52,7 @@ export function ClipboardList({
 
       {recentItems.length > 0 && (
         <div>
-          <div className="px-4 py-1 text-xs font-semibold dark:text-white/70 text-black uppercase tracking-wider mb-1">
+          <div className="mb-1 px-4 py-1 text-xs font-semibold uppercase tracking-wider text-black/70 dark:text-white/70">
             Recent
           </div>
           {recentItems.map((item, idx) => (
@@ -67,6 +67,6 @@ export function ClipboardList({
           ))}
         </div>
       )}
-    </>
+    </div>
   );
 }

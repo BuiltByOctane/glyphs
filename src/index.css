@@ -24,11 +24,30 @@
 
   body {
     background-color: transparent;
-    color: var(--color-foreground);
+    color: hsl(var(--foreground));
     font-feature-settings:
       "rlig" 1,
       "calt" 1;
+    margin: 0;
     overflow: hidden;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+    width: 100%;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  button,
+  input {
+    font: inherit;
   }
 }
 
@@ -37,4 +56,12 @@
 }
 .no-drag {
   -webkit-app-region: no-drag;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
