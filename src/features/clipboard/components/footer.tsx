@@ -30,14 +30,16 @@ const Shortcut = ({
 
 export const Footer = ({ onOpenShortcuts }: { onOpenShortcuts: () => void }) => {
   return (
-    <div className="no-scrollbar flex h-10 shrink-0 select-none items-center justify-start gap-1 overflow-x-auto border-t border-white/10 bg-white/[0.02] px-4 backdrop-blur-xl">
-      <Shortcut keys={["\u2318", "K"]} label="Search" />
-      <div className="w-px h-3 bg-white/10 mx-1" />
-      <Shortcut keys={["\u2191", "\u2193"]} label="Nav" />
-      <div className="w-px h-3 bg-white/10 mx-1" />
-      <Shortcut keys={["\u21B5"]} label="Select" />
-      <div className="w-px h-3 bg-white/10 mx-1" />
-      <Shortcut keys={["?"]} label="Shortcuts" onClick={onOpenShortcuts} />
+    <div className="no-scrollbar flex h-10 shrink-0 select-none items-center overflow-x-auto border-t border-white/10 bg-white/[0.02] px-3 backdrop-blur-xl">
+      <div className="mx-auto flex min-w-max items-center gap-1">
+        <Shortcut keys={["\u2318", "K"]} label="Search" />
+        <div className="mx-1 h-3 w-px bg-white/10" />
+        <Shortcut keys={["\u2191", "\u2193"]} label="Nav" />
+        <div className="mx-1 h-3 w-px bg-white/10" />
+        <Shortcut keys={["\u21B5"]} label="Select" />
+        <div className="mx-1 h-3 w-px bg-white/10" />
+        <Shortcut keys={["?"]} label="Shortcuts" onClick={onOpenShortcuts} />
+      </div>
     </div>
   );
 };

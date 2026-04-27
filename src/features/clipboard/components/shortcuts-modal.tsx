@@ -31,15 +31,17 @@ export function ShortcutsModal({ onClose }: ShortcutsModalProps) {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="flex max-h-[calc(100vh-2rem)] w-full max-w-sm flex-col overflow-hidden rounded-lg border border-white/10 bg-neutral-900 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
-          <h2 className="text-sm font-semibold text-white">Keyboard Shortcuts</h2>
+          <h2 className="text-sm font-semibold text-white">
+            Keyboard Shortcuts
+          </h2>
           <button
             onClick={onClose}
             className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-white/50 transition-colors hover:bg-white/10 hover:text-white"
           >
-            <X size={16} />
+            <X size={20} />
           </button>
         </div>
 

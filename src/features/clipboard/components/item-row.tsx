@@ -125,18 +125,15 @@ export function ItemRow({
                 />
               </button>
               {isGroupMenuOpen && (
-                <div className="absolute bottom-full right-0 z-[100] mb-2 max-h-48 w-40 overflow-y-auto rounded-lg border border-white/10 bg-neutral-800 py-1 shadow-xl">
-                  <div className="flex items-center justify-between px-2 py-1 text-[10px] font-semibold uppercase text-white/50">
-                    Move to <FolderOpen size={10} />
-                  </div>
+                <div className="absolute -bottom-10 right-10 z-100 mb-2 max-h-48 w-40 overflow-y-auto rounded-lg border border-white/10 bg-neutral-800 py-1 shadow-xl">
                   <button
-                    className="w-full text-left px-3 py-1.5 text-xs text-white hover:bg-white/10 border-b border-white/5"
+                    className="w-full text-left px-3 py-1.5 text-xs text-white hover:bg-white/10"
                     onClick={() => {
                       setItemGroup(item.id, undefined);
                       setIsGroupMenuOpen(false);
                     }}
                   >
-                    Unassigned
+                    All
                   </button>
                   {groups.map((g) => (
                     <button

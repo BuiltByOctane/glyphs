@@ -93,7 +93,6 @@ export default function App() {
             setIsGroupModalOpen(true);
           }}
         />
-
         <ClipboardList
           items={displayItems}
           pinnedItems={pinnedItems}
