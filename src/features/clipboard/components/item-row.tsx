@@ -44,6 +44,7 @@ export function ItemRow({
   return (
     <div
       ref={rowRef}
+      title={item.content}
       onMouseLeave={() => setIsGroupMenuOpen(false)}
       className={cn(
         "group mx-2 mb-1.5 flex min-h-[3.25rem] cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white/10",
