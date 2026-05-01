@@ -8,11 +8,9 @@ import {
   QrCode,
   FolderOpen,
 } from "lucide-react";
-  useClipboardStore,
-  ClipboardItem,
-} from "../../../store/use-clipboard-store";
 import { cn } from "../../../lib/utils";
 import { MoveCategoryModal } from "./move-category-modal";
+import { useClipboardStore, type ClipboardItem } from "../../../store/use-clipboard-store";
 
 interface ItemRowProps {
   item: ClipboardItem;
@@ -44,8 +42,7 @@ export function ItemRow({
   return (
     <div
       ref={rowRef}
-      title={item.content}
-      onMouseLeave={() => setIsGroupMenuOpen(false)}
+      title={isGroupMenuOpen ? undefined : item.content}
       className={cn(
         "group mx-2 mb-1.5 flex min-h-[3.25rem] cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white/10",
         isSelected ? "bg-white/15 text-white" : "bg-white/5 text-foreground",

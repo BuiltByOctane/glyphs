@@ -10,7 +10,7 @@ const SHORTCUTS = [
   { keys: ["\u2318", "1-9"], label: "Quick Copy" },
   { keys: ["↑", "↓", "/", "J", "K"], label: "Item Navigation" },
   { keys: ["H", "L"], label: "Switch Group" },
-  { keys: ["\u2318", "I"], label: "Manage Groups" },
+  { keys: ["\u2318", "G"], label: "Create New Group" },
   { keys: ["P"], label: "Pin Item" },
   { keys: ["\u2318", "D"], label: "Delete Item" },
   { keys: ["Enter"], label: "Copy Selected" },
@@ -31,9 +31,9 @@ export function ShortcutsModal({ onClose }: ShortcutsModalProps) {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="flex max-h-[calc(100vh-2rem)] w-full max-w-sm flex-col overflow-hidden rounded-lg border border-white/10 bg-neutral-900 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex rounded-2xl items-center justify-center">
+      <div className="flex max-h-[calc(100vh-2rem)] w-full flex-col overflow-hidden rounded-lg shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+        <div className="flex items-center justify-between px-4 pb-3 border-b border-white/10">
           <h2 className="text-sm font-semibold text-white">
             Keyboard Shortcuts
           </h2>

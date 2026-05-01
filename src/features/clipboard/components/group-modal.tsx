@@ -49,11 +49,12 @@ export function GroupModal({ onClose, editGroup }: GroupModalProps) {
   }, [onClose]);
 
   const handleSave = () => {
-    if (!name.trim()) return;
+    const trimmed = name.trim();
+    if (trimmed.length < 2 || trimmed.length > 24) return;
     if (editGroup) {
-      updateGroup({ ...editGroup, name: name.trim(), icon });
+      updateGroup({ ...editGroup, name: trimmed, icon });
     } else {
-      addGroup({ id: uuidv4(), name: name.trim(), icon });
+      addGroup({ id: uuidv4(), name: trimmed, icon });
     }
     onClose();
   };
@@ -66,7 +67,7 @@ export function GroupModal({ onClose, editGroup }: GroupModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center rounded-2xl justify-center p-4">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center rounded-2xl justify-center p-4">
       <div className="flex max-h-[calc(100vh-2rem)] w-full max-w-sm flex-col overflow-hidden rounded-lg border border-white/10 bg-neutral-900 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
           <h2 className="text-sm font-regular text-white">
@@ -90,6 +91,8 @@ export function GroupModal({ onClose, editGroup }: GroupModalProps) {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              maxLength={24}
+              minLength={2}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
@@ -142,8 +145,8 @@ export function GroupModal({ onClose, editGroup }: GroupModalProps) {
 
           <button
             onClick={handleSave}
-            disabled={!name.trim()}
-            className="flex h-8 items-center justify-center gap-1.5 rounded-md bg-white px-4 text-sm font-medium text-black transition-colors hover:bg-white/90 disabled:opacity-50"
+            disabled={name.trim().length < 2 || name.trim().length > 24}
+            className="flex h-8 items-center justify-center gap-1.5 rounded-md bg-white px-4 text-sm font-medium text-black transition-colors hover:bg-white/90 disabled:opacity-50 cursor-pointer"
           >
             {editGroup ? "Save" : "Create"}
           </button>

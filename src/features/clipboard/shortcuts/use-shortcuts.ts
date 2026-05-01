@@ -47,8 +47,8 @@ export function useShortcuts({
 
       const isSearchFocused = document.activeElement === searchRef.current;
 
-      // cmd + i: create group
-      if ((e.metaKey || e.ctrlKey) && e.key === "i") {
+      // cmd + g: create group
+      if ((e.metaKey || e.ctrlKey) && e.key === "g") {
         e.preventDefault();
         setIsGroupModalOpen(true);
         return;

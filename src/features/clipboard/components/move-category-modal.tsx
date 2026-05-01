@@ -30,21 +30,28 @@ export function MoveCategoryModal({ item, onClose }: MoveCategoryModalProps) {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex w-full items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200 rounded-2xl">
-      <div className="absolute inset-0" onClick={onClose} />
-      <button
-        onClick={onClose}
-        className="absolute right-4 z-50 top-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-white/50 transition-colors hover:bg-white/10 hover:text-white"
+    <div 
+      className="fixed inset-0 z-50 flex w-full items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200 rounded-2xl"
+      onClick={(e) => {
+        e.stopPropagation();
+        onClose();
+      }}
+    >
+      <div 
+        className="relative flex max-h-[calc(100vh-4rem)] w-full max-w-sm flex-col overflow-hidden rounded-lg bg-neutral-900 border border-white/10 shadow-2xl animate-in zoom-in-95 duration-200"
+        onClick={(e) => e.stopPropagation()}
       >
-        <X size={20} />
-      </button>
-      
-      <div className="relative flex max-h-[calc(100vh-4rem)] w-full max-w-sm flex-col overflow-hidden rounded-lg bg-neutral-900 border border-white/10 shadow-2xl animate-in zoom-in-95 duration-200">
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
           <h2 className="text-sm font-medium text-white flex items-center gap-2">
             <FolderOpen size={16} className="text-white/70" />
             Move to Category
           </h2>
+          <button
+            onClick={onClose}
+            className="absolute right-2 top-2 flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-white/50 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            <X size={20} />
+          </button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-2">
@@ -61,7 +68,7 @@ export function MoveCategoryModal({ item, onClose }: MoveCategoryModalProps) {
             <LayoutGrid size={16} className="text-white/70" />
             All
           </button>
-          
+
           {groups.map((g) => {
             const Icon = iconMap[g.icon] || LucideIcons.Folder;
             return (
