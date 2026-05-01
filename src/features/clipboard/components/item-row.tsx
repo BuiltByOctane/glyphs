@@ -8,11 +8,11 @@ import {
   QrCode,
   FolderOpen,
 } from "lucide-react";
-import {
   useClipboardStore,
   ClipboardItem,
 } from "../../../store/use-clipboard-store";
 import { cn } from "../../../lib/utils";
+import { MoveCategoryModal } from "./move-category-modal";
 
 interface ItemRowProps {
   item: ClipboardItem;
@@ -106,54 +106,24 @@ export function ItemRow({
           onClick={(e) => e.stopPropagation()}
         >
           {groups.length > 0 && (
-            <div className="relative">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsGroupMenuOpen(!isGroupMenuOpen);
-                }}
-                className={cn(
-                  "flex h-7 w-7 items-center justify-center rounded-md transition-colors",
-                  isGroupMenuOpen
-                    ? "bg-white/20 text-white"
-                    : "hover:bg-black/10 dark:hover:bg-white/10",
-                )}
-                title="Move to Group"
-              >
-                <FolderOpen
-                  size={14}
-                  className="cursor-pointer text-black/70 dark:text-white"
-                />
-              </button>
-              {isGroupMenuOpen && (
-                <div className="absolute -bottom-10 right-10 z-100 mb-2 max-h-48 w-40 overflow-y-auto rounded-lg border border-white/10 bg-neutral-800 py-1 shadow-xl">
-                  <button
-                    className="w-full text-left px-3 py-1.5 text-xs text-white hover:bg-white/10"
-                    onClick={() => {
-                      setItemGroup(item.id, undefined);
-                      setIsGroupMenuOpen(false);
-                    }}
-                  >
-                    All
-                  </button>
-                  {groups.map((g) => (
-                    <button
-                      key={g.id}
-                      className={cn(
-                        "w-full text-left px-3 py-1.5 text-xs text-white hover:bg-white/10 flex items-center gap-2",
-                        item.groupId === g.id && "bg-white/5",
-                      )}
-                      onClick={() => {
-                        setItemGroup(item.id, g.id);
-                        setIsGroupMenuOpen(false);
-                      }}
-                    >
-                      {g.name}
-                    </button>
-                  ))}
-                </div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsGroupMenuOpen(true);
+              }}
+              className={cn(
+                "flex h-7 w-7 items-center justify-center rounded-md transition-colors",
+                isGroupMenuOpen
+                  ? "bg-white/20 text-white"
+                  : "hover:bg-black/10 dark:hover:bg-white/10",
               )}
-            </div>
+              title="Move to Group"
+            >
+              <FolderOpen
+                size={14}
+                className="cursor-pointer text-black/70 dark:text-white"
+              />
+            </button>
           )}
           {item.type === "text" && (
             <button
@@ -199,6 +169,13 @@ export function ItemRow({
           </button>
         </div>
       </div>
+
+      {isGroupMenuOpen && (
+        <MoveCategoryModal
+          item={item}
+          onClose={() => setIsGroupMenuOpen(false)}
+        />
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import type { ComponentType } from "react";
 import { Plus, LayoutGrid } from "lucide-react";
 import * as LucideIcons from "lucide-react";
@@ -18,13 +18,31 @@ export function GroupChips({ onAddGroup, onEditGroup }: GroupChipsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const handleGroupClick = (e: React.MouseEvent, group: Group) => {
-    // If they double click or right click, open edit? Let's just use double click.
     if (e.detail === 2) {
       onEditGroup(group);
     } else {
       setActiveGroupId(group.id);
     }
   };
+
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const activeElement = container.querySelector('[data-active="true"]') as HTMLElement;
+    if (activeElement) {
+      const containerWidth = container.offsetWidth;
+      const elementOffset = activeElement.offsetLeft;
+      const elementWidth = activeElement.offsetWidth;
+
+      const scrollTarget = elementOffset - (containerWidth / 2) + (elementWidth / 2);
+      
+      container.scrollTo({
+        left: scrollTarget,
+        behavior: "smooth"
+      });
+    }
+  }, [activeGroupId]);
 
   return (
     <div className="flex h-12 shrink-0 items-center gap-2 border-b border-white/10 px-3">
@@ -34,6 +52,7 @@ export function GroupChips({ onAddGroup, onEditGroup }: GroupChipsProps) {
       >
         <button
           onClick={() => setActiveGroupId("all")}
+          data-active={activeGroupId === "all"}
           className={cn(
             "flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 text-xs font-medium transition-colors",
             activeGroupId === "all"
@@ -51,6 +70,7 @@ export function GroupChips({ onAddGroup, onEditGroup }: GroupChipsProps) {
             <button
               key={group.id}
               onClick={(e) => handleGroupClick(e, group)}
+              data-active={activeGroupId === group.id}
               onContextMenu={(e) => {
                 e.preventDefault();
                 onEditGroup(group);

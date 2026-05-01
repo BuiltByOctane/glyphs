@@ -31,7 +31,7 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
     };
 
     return (
-      <div className="window-drag z-10 flex shrink-0 items-center gap-2 border-b border-white/10 bg-white/[0.03] px-4 py-3 backdrop-blur-xl">
+      <div data-tauri-drag-region className="window-drag z-10 flex shrink-0 items-center gap-2 border-b border-white/10 bg-white/[0.03] px-4 py-3 backdrop-blur-xl">
         <Search
           size={20}
           className="no-drag shrink-0 text-black/60 dark:text-white/80"

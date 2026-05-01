@@ -51,7 +51,7 @@ export default function App() {
 
   useEffect(() => {
     setSelectedIndex(0);
-  }, [searchQuery, displayItems.length]);
+  }, [searchQuery, displayItems.length, activeGroupId]);
 
   useShortcuts({
     displayItems,
@@ -73,7 +73,7 @@ export default function App() {
   });
 
   return (
-    <div className="flex h-screen w-screen flex-col overflow-hidden rounded-2xl border border-white/20 bg-transparent text-foreground dark:border-white/10">
+    <div data-tauri-drag-region className="flex h-screen w-screen flex-col overflow-hidden rounded-2xl border border-white/20 bg-transparent text-foreground dark:border-white/10">
       <div className="no-drag flex min-h-0 flex-1 flex-col overflow-hidden border-t border-white/20">
         <SearchBar
           ref={searchRef}
