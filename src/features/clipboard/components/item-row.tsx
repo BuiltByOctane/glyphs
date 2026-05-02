@@ -27,7 +27,7 @@ export function ItemRow({
   onClick,
   onShowQr,
 }: ItemRowProps) {
-  const { togglePin, deleteItem, pasteItem, groups, setItemGroup } =
+  const { togglePin, deleteItem, pasteItem, groups } =
     useClipboardStore();
   const [isGroupMenuOpen, setIsGroupMenuOpen] = useState(false);
   const isSelected = index === selectedIndex;
