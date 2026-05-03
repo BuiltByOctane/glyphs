@@ -7,9 +7,10 @@ interface ClipboardListProps {
   pinnedItems: ClipboardItem[];
   recentItems: ClipboardItem[];
   searchQuery: string;
-  selectedIndex: number;
+  selectedId: string | null;
   onPasteItem: (id: string) => void;
   onShowQr: (content: string) => void;
+  onShowMove: (item: ClipboardItem) => void;
 }
 
 export function ClipboardList({
@@ -17,9 +18,10 @@ export function ClipboardList({
   pinnedItems,
   recentItems,
   searchQuery,
-  selectedIndex,
+  selectedId,
   onPasteItem,
   onShowQr,
+  onShowMove,
 }: ClipboardListProps) {
   if (items.length === 0) {
     return (
@@ -41,10 +43,11 @@ export function ClipboardList({
             <ItemRow
               key={item.id}
               item={item}
-              index={idx}
-              selectedIndex={selectedIndex}
+              displayIndex={idx}
+              isSelected={selectedId === item.id}
               onClick={() => onPasteItem(item.id)}
               onShowQr={onShowQr}
+              onShowMove={onShowMove}
             />
           ))}
         </div>
@@ -59,10 +62,11 @@ export function ClipboardList({
             <ItemRow
               key={item.id}
               item={item}
-              index={idx + pinnedItems.length}
-              selectedIndex={selectedIndex}
+              displayIndex={idx + pinnedItems.length}
+              isSelected={selectedId === item.id}
               onClick={() => onPasteItem(item.id)}
               onShowQr={onShowQr}
+              onShowMove={onShowMove}
             />
           ))}
         </div>

@@ -30,7 +30,7 @@ export function MoveCategoryModal({ item, onClose }: MoveCategoryModalProps) {
   }, [onClose]);
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex w-full items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200 rounded-2xl"
       onClick={(e) => {
         e.stopPropagation();

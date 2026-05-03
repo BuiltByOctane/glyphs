@@ -8,13 +8,13 @@ interface ShortcutsModalProps {
 const SHORTCUTS = [
   { keys: ["\u2318", "K"], label: "Search" },
   { keys: ["\u2318", "1-9"], label: "Quick Copy" },
-  { keys: ["↑", "↓", "/", "J", "K"], label: "Item Navigation" },
+  { keys: ["↑", "↓", "J", "K"], label: "Item Navigation" },
   { keys: ["H", "L"], label: "Switch Group" },
   { keys: ["\u2318", "G"], label: "Create New Group" },
   { keys: ["P"], label: "Pin Item" },
   { keys: ["\u2318", "D"], label: "Delete Item" },
   { keys: ["Enter"], label: "Copy Selected" },
-  { keys: ["Esc", "/", "\u2318", "["], label: "Navigation Mode" },
+  { keys: ["Esc", "\u2318", "["], label: "Navigation Mode" },
   { keys: ["?"], label: "Show Shortcuts" },
 ];
 

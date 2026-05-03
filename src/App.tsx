@@ -1,9 +1,15 @@
-import { useEffect, useState, useRef } from "react";
-import { type Group, useClipboardStore } from "./store/use-clipboard-store";
+import { useEffect, useMemo, useState, useRef } from "react";
+import {
+  type ClipboardItem,
+  type Group,
+  subscribeToBackend,
+  useClipboardStore,
+} from "./store/use-clipboard-store";
 import { SearchBar } from "./features/clipboard/components/search-bar";
 import { ClipboardList } from "./features/clipboard/components/clipboard-list";
 import { GroupChips } from "./features/clipboard/components/group-chips";
 import { GroupModal } from "./features/clipboard/components/group-modal";
+import { MoveCategoryModal } from "./features/clipboard/components/move-category-modal";
 
 import { Footer } from "./features/clipboard/components/footer";
 import { useShortcuts } from "./features/clipboard/shortcuts/use-shortcuts";
@@ -26,49 +32,91 @@ export default function App() {
     togglePin,
   } = useClipboardStore();
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [qrContent, setQrContent] = useState<string | null>(null);
+  const [moveModalItem, setMoveModalItem] = useState<ClipboardItem | null>(null);
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
   const [isShortcutsModalOpen, setIsShortcutsModalOpen] = useState(false);
   const [editGroup, setEditGroup] = useState<Group | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
+  // Register backend listeners first, then load initial data — this avoids the
+  // startup race where a clipboard event fires before the listener is bound.
   useEffect(() => {
-    loadHistory();
-    loadGroups();
+    let cleanup: (() => void) | null = null;
+    let cancelled = false;
+    (async () => {
+      const unsubscribe = await subscribeToBackend();
+      if (cancelled) {
+        unsubscribe();
+        return;
+      }
+      cleanup = unsubscribe;
+      await Promise.all([loadHistory(), loadGroups()]);
+    })();
+    return () => {
+      cancelled = true;
+      cleanup?.();
+    };
   }, [loadHistory, loadGroups]);
 
-  const filteredItems = items.filter((item) => {
-    if (activeGroupId !== "all" && item.groupId !== activeGroupId) return false;
-    if (!searchQuery) return true;
-    if (item.type === "image") return false;
-    return item.content.toLowerCase().includes(searchQuery.toLowerCase());
-  });
+  const filteredItems = useMemo(
+    () =>
+      items.filter((item) => {
+        if (activeGroupId !== "all" && item.groupId !== activeGroupId) return false;
+        if (!searchQuery) return true;
+        if (item.type === "image") return false;
+        return item.content.toLowerCase().includes(searchQuery.toLowerCase());
+      }),
+    [items, activeGroupId, searchQuery],
+  );
 
-  const pinnedItems = filteredItems.filter((i) => i.isPinned);
-  const recentItems = filteredItems.filter((i) => !i.isPinned);
-  const displayItems = [...pinnedItems, ...recentItems];
+  const pinnedItems = useMemo(
+    () => filteredItems.filter((i) => i.isPinned),
+    [filteredItems],
+  );
+  const recentItems = useMemo(
+    () => filteredItems.filter((i) => !i.isPinned),
+    [filteredItems],
+  );
+  const displayItems = useMemo(
+    () => [...pinnedItems, ...recentItems],
+    [pinnedItems, recentItems],
+  );
 
+  // If the previously-selected item leaves the visible set (filtered out,
+  // deleted, etc.) snap back to the first item.
   useEffect(() => {
-    setSelectedIndex(0);
-  }, [searchQuery, displayItems.length, activeGroupId]);
+    if (displayItems.length === 0) {
+      if (selectedId !== null) setSelectedId(null);
+      return;
+    }
+    if (!selectedId || !displayItems.some((i) => i.id === selectedId)) {
+      setSelectedId(displayItems[0].id);
+    }
+  }, [displayItems, selectedId]);
+
+  const isAnyModalOpen =
+    isGroupModalOpen ||
+    isShortcutsModalOpen ||
+    qrContent !== null ||
+    moveModalItem !== null;
 
   useShortcuts({
     displayItems,
-    selectedIndex,
-    setSelectedIndex,
+    selectedId,
+    setSelectedId,
     searchQuery,
     setSearchQuery,
     searchRef,
     pasteItem,
     deleteItem,
     togglePin,
-    isGroupModalOpen,
+    isAnyModalOpen,
     setIsGroupModalOpen,
     groups,
     activeGroupId,
     setActiveGroupId,
-    isShortcutsModalOpen,
     setIsShortcutsModalOpen,
   });
 
@@ -98,9 +146,10 @@ export default function App() {
           pinnedItems={pinnedItems}
           recentItems={recentItems}
           searchQuery={searchQuery}
-          selectedIndex={selectedIndex}
+          selectedId={selectedId}
           onPasteItem={pasteItem}
           onShowQr={setQrContent}
+          onShowMove={setMoveModalItem}
         />
       </div>
 
@@ -108,6 +157,12 @@ export default function App() {
 
       {qrContent && (
         <QrModal content={qrContent} onClose={() => setQrContent(null)} />
+      )}
+      {moveModalItem && (
+        <MoveCategoryModal
+          item={moveModalItem}
+          onClose={() => setMoveModalItem(null)}
+        />
       )}
       {isGroupModalOpen && (
         <GroupModal

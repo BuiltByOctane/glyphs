@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   Pin,
   Trash2,
@@ -9,28 +9,26 @@ import {
   FolderOpen,
 } from "lucide-react";
 import { cn } from "../../../lib/utils";
-import { MoveCategoryModal } from "./move-category-modal";
 import { useClipboardStore, type ClipboardItem } from "../../../store/use-clipboard-store";
 
 interface ItemRowProps {
   item: ClipboardItem;
-  index: number;
-  selectedIndex: number;
+  displayIndex: number;
+  isSelected: boolean;
   onClick: () => void;
   onShowQr: (content: string) => void;
+  onShowMove: (item: ClipboardItem) => void;
 }
 
 export function ItemRow({
   item,
-  index,
-  selectedIndex,
+  displayIndex,
+  isSelected,
   onClick,
   onShowQr,
+  onShowMove,
 }: ItemRowProps) {
-  const { togglePin, deleteItem, pasteItem, groups } =
-    useClipboardStore();
-  const [isGroupMenuOpen, setIsGroupMenuOpen] = useState(false);
-  const isSelected = index === selectedIndex;
+  const { togglePin, deleteItem, pasteItem, groups } = useClipboardStore();
   const rowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,10 +37,17 @@ export function ItemRow({
     }
   }, [isSelected]);
 
+  // item.content for images is a `data:image/png;base64,...` string produced
+  // by the Rust watcher. Treated as trusted in CSS background-image; if that
+  // ever changes (e.g. external paste), validate the data-URL prefix here.
+  const imageBackground = item.type === "image"
+    ? { backgroundImage: `url(${item.content})` }
+    : undefined;
+
   return (
     <div
       ref={rowRef}
-      title={isGroupMenuOpen ? undefined : item.content}
+      title={item.content}
       className={cn(
         "group mx-2 mb-1.5 flex min-h-[3.25rem] cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white/10",
         isSelected ? "bg-white/15 text-white" : "bg-white/5 text-foreground",
@@ -78,42 +83,29 @@ export function ItemRow({
               {item.content.trim()}
             </span>
           ) : (
-            <div
-              className="h-10 w-24 rounded bg-cover bg-center"
-              style={{ backgroundImage: `url(${item.content})` }}
-            />
+            <div className="h-10 w-24 rounded bg-cover bg-center" style={imageBackground} />
           )}
         </div>
       </div>
 
       <div className="relative flex h-8 w-[9.5rem] max-w-[45%] shrink-0 items-center justify-end">
-        {index < 9 && (
+        {displayIndex < 9 && (
           <span className="pointer-events-none absolute right-0 rounded border border-white/5 bg-white/10 px-1.5 py-0.5 text-[10px] font-medium text-white/25 transition-opacity group-hover:opacity-0">
-            {"\u2318"}
-            <span className="ml-1">{index + 1}</span>
+            {"⌘"}
+            <span className="ml-1">{displayIndex + 1}</span>
           </span>
         )}
         <div
-          className={cn(
-            "relative flex items-center gap-1 bg-transparent transition-opacity",
-            isGroupMenuOpen
-              ? "opacity-100"
-              : "pointer-events-none opacity-0 group-hover:pointer-events-auto group-hover:opacity-100",
-          )}
+          className="pointer-events-none relative flex items-center gap-1 bg-transparent opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100"
           onClick={(e) => e.stopPropagation()}
         >
           {groups.length > 0 && (
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                setIsGroupMenuOpen(true);
+                onShowMove(item);
               }}
-              className={cn(
-                "flex h-7 w-7 items-center justify-center rounded-md transition-colors",
-                isGroupMenuOpen
-                  ? "bg-white/20 text-white"
-                  : "hover:bg-black/10 dark:hover:bg-white/10",
-              )}
+              className="flex h-7 w-7 items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10"
               title="Move to Group"
             >
               <FolderOpen
@@ -166,13 +158,6 @@ export function ItemRow({
           </button>
         </div>
       </div>
-
-      {isGroupMenuOpen && (
-        <MoveCategoryModal
-          item={item}
-          onClose={() => setIsGroupMenuOpen(false)}
-        />
-      )}
     </div>
   );
 }
