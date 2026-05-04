@@ -16,6 +16,7 @@ import { Footer } from "./features/clipboard/components/footer";
 import { useShortcuts } from "./features/clipboard/shortcuts/use-shortcuts";
 import { QrModal } from "./features/clipboard/components/qr-modal";
 import { ShortcutsModal } from "./features/clipboard/components/shortcuts-modal";
+import { SettingsPage } from "./features/settings/components/settings-page";
 
 export default function App() {
   const {
@@ -25,8 +26,10 @@ export default function App() {
     setActiveGroupId,
     searchQuery,
     setSearchQuery,
+    settings,
     loadHistory,
     loadGroups,
+    loadSettings,
     clearHistory,
     pasteItem,
     deleteItem,
@@ -38,6 +41,7 @@ export default function App() {
   const [moveModalItem, setMoveModalItem] = useState<ClipboardItem | null>(null);
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
   const [isShortcutsModalOpen, setIsShortcutsModalOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [editGroup, setEditGroup] = useState<Group | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -53,13 +57,30 @@ export default function App() {
         return;
       }
       cleanup = unsubscribe;
-      await Promise.all([loadHistory(), loadGroups()]);
+      await Promise.all([loadHistory(), loadGroups(), loadSettings()]);
     })();
     return () => {
       cancelled = true;
       cleanup?.();
     };
-  }, [loadHistory, loadGroups]);
+  }, [loadHistory, loadGroups, loadSettings]);
+
+  // Apply theme to <html>. "system" follows prefers-color-scheme live.
+  useEffect(() => {
+    const root = document.documentElement;
+    const apply = (mode: "light" | "dark") => {
+      root.classList.toggle("dark", mode === "dark");
+    };
+    if (settings.theme === "light" || settings.theme === "dark") {
+      apply(settings.theme);
+      return;
+    }
+    const mql = window.matchMedia("(prefers-color-scheme: dark)");
+    apply(mql.matches ? "dark" : "light");
+    const handler = (e: MediaQueryListEvent) => apply(e.matches ? "dark" : "light");
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, [settings.theme]);
 
   // Refocus the search input every time the window is shown (the input only
   // autofocuses on initial mount; toggle_window emits window-shown on every
@@ -125,7 +146,8 @@ export default function App() {
     isGroupModalOpen ||
     isShortcutsModalOpen ||
     qrContent !== null ||
-    moveModalItem !== null;
+    moveModalItem !== null ||
+    isSettingsOpen;
 
   useShortcuts({
     displayItems,
@@ -143,42 +165,52 @@ export default function App() {
     activeGroupId,
     setActiveGroupId,
     setIsShortcutsModalOpen,
+    setIsSettingsOpen,
   });
 
   return (
     <div data-tauri-drag-region className="flex h-screen w-screen flex-col overflow-hidden rounded-2xl border border-white/20 bg-transparent text-foreground dark:border-white/10">
       <div className="no-drag flex min-h-0 flex-1 flex-col overflow-hidden border-t border-white/20">
-        <SearchBar
-          ref={searchRef}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          showClearButton={items.length > 0}
-          onClearHistory={clearHistory}
-        />
+        {isSettingsOpen ? (
+          <SettingsPage onClose={() => setIsSettingsOpen(false)} />
+        ) : (
+          <>
+            <SearchBar
+              ref={searchRef}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              showClearButton={items.length > 0}
+              onClearHistory={clearHistory}
+            />
 
-        <GroupChips
-          onAddGroup={() => {
-            setEditGroup(null);
-            setIsGroupModalOpen(true);
-          }}
-          onEditGroup={(group) => {
-            setEditGroup(group);
-            setIsGroupModalOpen(true);
-          }}
-        />
-        <ClipboardList
-          items={displayItems}
-          pinnedItems={pinnedItems}
-          recentItems={recentItems}
-          searchQuery={searchQuery}
-          selectedId={selectedId}
-          onPasteItem={pasteItem}
-          onShowQr={setQrContent}
-          onShowMove={setMoveModalItem}
-        />
+            <GroupChips
+              onAddGroup={() => {
+                setEditGroup(null);
+                setIsGroupModalOpen(true);
+              }}
+              onEditGroup={(group) => {
+                setEditGroup(group);
+                setIsGroupModalOpen(true);
+              }}
+            />
+            <ClipboardList
+              items={displayItems}
+              pinnedItems={pinnedItems}
+              recentItems={recentItems}
+              searchQuery={searchQuery}
+              selectedId={selectedId}
+              onPasteItem={pasteItem}
+              onShowQr={setQrContent}
+              onShowMove={setMoveModalItem}
+            />
+          </>
+        )}
       </div>
 
-      <Footer onOpenShortcuts={() => setIsShortcutsModalOpen(true)} />
+      <Footer
+        onOpenShortcuts={() => setIsShortcutsModalOpen(true)}
+        onOpenSettings={() => setIsSettingsOpen(true)}
+      />
 
       {qrContent && (
         <QrModal content={qrContent} onClose={() => setQrContent(null)} />

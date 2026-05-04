@@ -1,3 +1,5 @@
+import { Settings as SettingsIcon } from "lucide-react";
+
 const Shortcut = ({
   keys,
   label,
@@ -28,17 +30,33 @@ const Shortcut = ({
   </button>
 );
 
-export const Footer = ({ onOpenShortcuts }: { onOpenShortcuts: () => void }) => {
+interface FooterProps {
+  onOpenShortcuts: () => void;
+  onOpenSettings: () => void;
+}
+
+export const Footer = ({ onOpenShortcuts, onOpenSettings }: FooterProps) => {
   return (
     <div data-tauri-drag-region className="no-scrollbar flex h-10 shrink-0 select-none items-center overflow-x-auto border-t border-white/10 bg-white/[0.02] px-3 backdrop-blur-xl">
       <div className="mx-auto flex min-w-max items-center gap-1">
-        <Shortcut keys={["\u2318", "K"]} label="Search" />
+        <Shortcut keys={["⌘", "K"]} label="Search" />
         <div className="mx-1 h-3 w-px bg-white/10" />
-        <Shortcut keys={["\u2191", "\u2193"]} label="Nav" />
+        <Shortcut keys={["↑", "↓"]} label="Nav" />
         <div className="mx-1 h-3 w-px bg-white/10" />
-        <Shortcut keys={["\u21B5"]} label="Select" />
+        <Shortcut keys={["↵"]} label="Select" />
         <div className="mx-1 h-3 w-px bg-white/10" />
         <Shortcut keys={["?"]} label="Shortcuts" onClick={onOpenShortcuts} />
+        <div className="mx-1 h-3 w-px bg-white/10" />
+        <button
+          onClick={onOpenSettings}
+          className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-white/40 transition-colors hover:bg-white/5 hover:text-white/70"
+          title="Settings (⌘ ,)"
+        >
+          <SettingsIcon size={12} />
+          <span className="whitespace-nowrap text-[10px] font-medium uppercase tracking-wider">
+            Settings
+          </span>
+        </button>
       </div>
     </div>
   );

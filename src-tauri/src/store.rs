@@ -22,6 +22,30 @@ pub struct Group {
     pub icon: String,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Settings {
+    pub auto_start: bool,
+    pub max_history_size: usize,
+    pub global_shortcut: String,
+    pub theme: String,
+    pub hide_on_blur: bool,
+    pub always_on_top: bool,
+}
+
+impl Default for Settings {
+    fn default() -> Self {
+        Self {
+            auto_start: false,
+            max_history_size: DEFAULT_MAX_HISTORY_SIZE,
+            global_shortcut: "CommandOrControl+B".to_string(),
+            theme: "system".to_string(),
+            hide_on_blur: true,
+            always_on_top: true,
+        }
+    }
+}
+
 pub struct HistoryLock(pub Mutex<()>);
 
 impl Default for HistoryLock {
@@ -76,14 +100,31 @@ pub fn save_groups(app: &tauri::AppHandle, groups: &[Group]) -> Result<(), Strin
     store.save().map_err(|e| e.to_string())
 }
 
-pub fn load_max_history_size(app: &tauri::AppHandle) -> usize {
-    let Ok(store) = app.store(STORE_PATH) else {
-        return DEFAULT_MAX_HISTORY_SIZE;
-    };
-    store
+pub fn load_settings(app: &tauri::AppHandle) -> Result<Settings, String> {
+    let store = app.store(STORE_PATH).map_err(|e| e.to_string())?;
+    Ok(store
         .get("settings")
-        .and_then(|v| v.get("maxHistorySize").cloned())
-        .and_then(|v| v.as_u64())
-        .map(|n| n as usize)
+        .and_then(|v| serde_json::from_value::<Settings>(v.clone()).ok())
+        .unwrap_or_default())
+}
+
+pub fn save_settings(app: &tauri::AppHandle, settings: &Settings) -> Result<(), String> {
+    let store = app.store(STORE_PATH).map_err(|e| e.to_string())?;
+    let value = serde_json::to_value(settings).map_err(|e| e.to_string())?;
+    store.set("settings", value);
+    store.save().map_err(|e| e.to_string())
+}
+
+pub fn clear_all(app: &tauri::AppHandle) -> Result<(), String> {
+    let store = app.store(STORE_PATH).map_err(|e| e.to_string())?;
+    store.delete("history");
+    store.delete("groups");
+    store.delete("settings");
+    store.save().map_err(|e| e.to_string())
+}
+
+pub fn load_max_history_size(app: &tauri::AppHandle) -> usize {
+    load_settings(app)
+        .map(|s| s.max_history_size)
         .unwrap_or(DEFAULT_MAX_HISTORY_SIZE)
 }

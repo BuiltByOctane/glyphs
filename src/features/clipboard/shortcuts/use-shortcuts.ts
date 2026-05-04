@@ -20,6 +20,7 @@ interface UseShortcutsProps {
   activeGroupId: string;
   setActiveGroupId: (id: string) => void;
   setIsShortcutsModalOpen: (open: boolean) => void;
+  setIsSettingsOpen: (open: boolean) => void;
 }
 
 // Stash mutable values in a ref so the keydown listener installs once and
@@ -44,6 +45,12 @@ export function useShortcuts(props: UseShortcutsProps) {
       if ((e.metaKey || e.ctrlKey) && e.key === "g") {
         e.preventDefault();
         p.setIsGroupModalOpen(true);
+        return;
+      }
+
+      if ((e.metaKey || e.ctrlKey) && e.key === ",") {
+        e.preventDefault();
+        p.setIsSettingsOpen(true);
         return;
       }
 

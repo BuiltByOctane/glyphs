@@ -17,6 +17,26 @@ export interface ClipboardItem {
   groupId?: string;
 }
 
+export type Theme = "system" | "light" | "dark";
+
+export interface Settings {
+  autoStart: boolean;
+  maxHistorySize: number;
+  globalShortcut: string;
+  theme: Theme;
+  hideOnBlur: boolean;
+  alwaysOnTop: boolean;
+}
+
+export const DEFAULT_SETTINGS: Settings = {
+  autoStart: false,
+  maxHistorySize: 100,
+  globalShortcut: "CommandOrControl+B",
+  theme: "system",
+  hideOnBlur: true,
+  alwaysOnTop: true,
+};
+
 function mapItem(raw: Record<string, unknown>): ClipboardItem {
   return {
     id: raw.id as string,
@@ -47,12 +67,17 @@ interface ClipboardState {
   groups: Group[];
   activeGroupId: string;
   searchQuery: string;
+  settings: Settings;
   setItems: (items: ClipboardItem[]) => void;
   setGroups: (groups: Group[]) => void;
   setActiveGroupId: (id: string) => void;
   setSearchQuery: (query: string) => void;
+  setSettings: (settings: Settings) => void;
   loadHistory: () => Promise<void>;
   loadGroups: () => Promise<void>;
+  loadSettings: () => Promise<void>;
+  updateSettings: (partial: Partial<Settings>) => Promise<Settings | null>;
+  clearAllData: () => Promise<void>;
   addGroup: (group: Group) => Promise<void>;
   updateGroup: (group: Group) => Promise<void>;
   deleteGroup: (id: string) => Promise<void>;
@@ -63,15 +88,17 @@ interface ClipboardState {
   pasteItem: (id: string, asPlainText?: boolean) => Promise<void>;
 }
 
-export const useClipboardStore = create<ClipboardState>((set) => ({
+export const useClipboardStore = create<ClipboardState>((set, get) => ({
   items: [],
   groups: [],
   activeGroupId: "all",
   searchQuery: "",
+  settings: DEFAULT_SETTINGS,
   setItems: (items) => set({ items }),
   setGroups: (groups) => set({ groups }),
   setActiveGroupId: (activeGroupId) => set({ activeGroupId }),
   setSearchQuery: (searchQuery) => set({ searchQuery }),
+  setSettings: (settings) => set({ settings }),
 
   loadHistory: async () => {
     const raw = await safeInvoke<unknown>("get_history");
@@ -81,6 +108,35 @@ export const useClipboardStore = create<ClipboardState>((set) => ({
   loadGroups: async () => {
     const groups = await safeInvoke<Group[]>("get_groups");
     if (groups !== null) set({ groups });
+  },
+
+  loadSettings: async () => {
+    const settings = await safeInvoke<Settings>("get_settings");
+    if (settings !== null) set({ settings });
+  },
+
+  updateSettings: async (partial) => {
+    const current = get().settings;
+    const next = { ...current, ...partial };
+    const result = await safeInvoke<Settings>("update_settings", { settings: next });
+    if (result !== null) {
+      set({ settings: result });
+      return result;
+    }
+    return null;
+  },
+
+  clearAllData: async () => {
+    const ok = await safeInvoke("clear_all_data");
+    if (ok !== null) {
+      set({
+        items: [],
+        groups: [],
+        settings: DEFAULT_SETTINGS,
+        activeGroupId: "all",
+        searchQuery: "",
+      });
+    }
   },
 
   addGroup: async (group) => {
@@ -144,8 +200,17 @@ export async function subscribeToBackend(): Promise<() => void> {
       }
     },
   );
+  const unlistenSettings: UnlistenFn = await listen<Settings>(
+    "settings-updated",
+    (event) => {
+      if (event.payload && typeof event.payload === "object") {
+        useClipboardStore.getState().setSettings(event.payload);
+      }
+    },
+  );
   return () => {
     unlistenHistory();
     unlistenGroups();
+    unlistenSettings();
   };
 }

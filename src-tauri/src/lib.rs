@@ -2,22 +2,30 @@ mod clipboard_watcher;
 mod commands;
 mod store;
 
-use crate::store::{HistoryLock, PrevApp};
+use crate::store::{load_settings, HistoryLock, PrevApp, Settings};
 use tauri::{
     menu::{Menu, MenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
     Emitter, Manager,
 };
+use tauri_plugin_autostart::ManagerExt as AutostartManagerExt;
 
 pub fn run() {
     let mut builder = tauri::Builder::default()
         .manage(HistoryLock::default())
         .manage(PrevApp::default())
         .plugin(tauri_plugin_store::Builder::new().build())
-        .plugin(tauri_plugin_log::Builder::new().build());
+        .plugin(tauri_plugin_log::Builder::new().build())
+        .plugin(tauri_plugin_autostart::init(
+            tauri_plugin_autostart::MacosLauncher::LaunchAgent,
+            None,
+        ));
 
+    // The global shortcut plugin needs its key combo at builder time, so we
+    // register the default Cmd+B here and reconcile to the user's persisted
+    // shortcut in setup() below if it differs.
     let shortcut_plugin = tauri_plugin_global_shortcut::Builder::new()
-        .with_shortcut("CommandOrControl+B")
+        .with_shortcut(Settings::default().global_shortcut.as_str())
         .map(|b| {
             b.with_handler(|app, _shortcut, event| {
                 if event.state() == tauri_plugin_global_shortcut::ShortcutState::Pressed {
@@ -31,7 +39,7 @@ pub fn run() {
         Ok(plugin) => builder.plugin(plugin),
         Err(e) => {
             log::error!(
-                "Failed to register global shortcut Cmd/Ctrl+B: {}. The app will run without it.",
+                "Failed to register default global shortcut: {}. The app will run without it.",
                 e
             );
             builder
@@ -50,6 +58,10 @@ pub fn run() {
             commands::update_group,
             commands::delete_group,
             commands::set_item_group,
+            commands::get_settings,
+            commands::update_settings,
+            commands::register_global_shortcut,
+            commands::clear_all_data,
         ])
         .setup(|app| {
             #[cfg(target_os = "macos")]
@@ -66,6 +78,41 @@ pub fn run() {
                         None,
                         Some(16.0),
                     );
+                }
+            }
+
+            // Apply persisted settings: shortcut, always-on-top, autostart.
+            let settings = load_settings(app.handle()).unwrap_or_default();
+            let defaults = Settings::default();
+
+            if settings.global_shortcut != defaults.global_shortcut {
+                use tauri_plugin_global_shortcut::GlobalShortcutExt;
+                let gs = app.global_shortcut();
+                let _ = gs.unregister(defaults.global_shortcut.as_str());
+                if let Err(e) = gs.register(settings.global_shortcut.as_str()) {
+                    log::warn!(
+                        "failed to register persisted shortcut '{}': {}. Falling back to default.",
+                        settings.global_shortcut,
+                        e
+                    );
+                    let _ = gs.register(defaults.global_shortcut.as_str());
+                }
+            }
+
+            if let Some(window) = app.get_webview_window("main") {
+                let _ = window.set_always_on_top(settings.always_on_top);
+            }
+
+            // Reconcile auto-start with the persisted setting.
+            let auto = app.autolaunch();
+            let currently_enabled = auto.is_enabled().unwrap_or(false);
+            if settings.auto_start && !currently_enabled {
+                if let Err(e) = auto.enable() {
+                    log::warn!("failed to enable autostart: {}", e);
+                }
+            } else if !settings.auto_start && currently_enabled {
+                if let Err(e) = auto.disable() {
+                    log::warn!("failed to disable autostart: {}", e);
                 }
             }
 
@@ -101,10 +148,13 @@ pub fn run() {
         })
         .on_window_event(|window, event| {
             if let tauri::WindowEvent::Focused(false) = event {
-                #[cfg(not(debug_assertions))]
-                let _ = window.hide();
-                #[cfg(debug_assertions)]
-                let _ = window;
+                // Re-read settings each time so the toggle takes effect without restart.
+                let hide = load_settings(window.app_handle())
+                    .map(|s| s.hide_on_blur)
+                    .unwrap_or(true);
+                if hide {
+                    let _ = window.hide();
+                }
             }
         })
         .run(tauri::generate_context!())

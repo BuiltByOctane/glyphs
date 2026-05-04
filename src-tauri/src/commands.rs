@@ -1,10 +1,14 @@
 use crate::store::*;
 use arboard::Clipboard;
 use tauri::{AppHandle, Emitter, Manager};
+use tauri_plugin_autostart::ManagerExt as AutostartManagerExt;
+use tauri_plugin_global_shortcut::GlobalShortcutExt;
 
 const GROUP_NAME_MIN: usize = 2;
 const GROUP_NAME_MAX: usize = 24;
 const GROUP_ICON_MAX: usize = 64;
+const MIN_HISTORY: usize = 10;
+const MAX_HISTORY: usize = 500;
 
 #[tauri::command]
 pub fn get_history(app: AppHandle) -> Result<Vec<ClipboardItem>, String> {
@@ -322,4 +326,100 @@ fn simulate_paste(prev_app: Option<String>) {
 
         IN_FLIGHT.store(false, Ordering::Release);
     });
+}
+
+#[tauri::command]
+pub fn get_settings(app: AppHandle) -> Result<Settings, String> {
+    load_settings(&app)
+}
+
+#[tauri::command]
+pub fn update_settings(app: AppHandle, settings: Settings) -> Result<Settings, String> {
+    let mut new_settings = settings;
+    new_settings.global_shortcut = new_settings.global_shortcut.trim().to_string();
+    if new_settings.global_shortcut.is_empty() {
+        return Err("global shortcut cannot be empty".into());
+    }
+    if new_settings.max_history_size < MIN_HISTORY || new_settings.max_history_size > MAX_HISTORY {
+        return Err(format!(
+            "max history must be between {} and {}",
+            MIN_HISTORY, MAX_HISTORY
+        ));
+    }
+    if !matches!(new_settings.theme.as_str(), "system" | "light" | "dark") {
+        return Err("theme must be system, light or dark".into());
+    }
+
+    let prev = load_settings(&app).unwrap_or_default();
+
+    if new_settings.global_shortcut != prev.global_shortcut {
+        let gs = app.global_shortcut();
+        let _ = gs.unregister(prev.global_shortcut.as_str());
+        gs.register(new_settings.global_shortcut.as_str())
+            .map_err(|e| format!("failed to register shortcut: {}", e))?;
+    }
+
+    if new_settings.auto_start != prev.auto_start {
+        let auto = app.autolaunch();
+        let result = if new_settings.auto_start {
+            auto.enable()
+        } else {
+            auto.disable()
+        };
+        if let Err(e) = result {
+            log::warn!("autostart toggle failed: {}", e);
+        }
+    }
+
+    if new_settings.always_on_top != prev.always_on_top {
+        if let Some(window) = app.get_webview_window("main") {
+            let _ = window.set_always_on_top(new_settings.always_on_top);
+        }
+    }
+
+    save_settings(&app, &new_settings)?;
+    let _ = app.emit("settings-updated", &new_settings);
+    Ok(new_settings)
+}
+
+#[tauri::command]
+pub fn register_global_shortcut(app: AppHandle, shortcut: String) -> Result<(), String> {
+    // Probe-only: register, then unregister, leaving the system in its prior
+    // state. Used by the settings UI to detect conflicts before persisting.
+    // The actual durable registration happens in `update_settings`.
+    let trimmed = shortcut.trim();
+    if trimmed.is_empty() {
+        return Err("shortcut cannot be empty".into());
+    }
+    // If the probe target equals our currently-registered shortcut, the OS
+    // would (correctly) say it's already registered. That's not a conflict
+    // from the user's perspective — they just re-confirmed the same combo.
+    let current = load_settings(&app)
+        .map(|s| s.global_shortcut)
+        .unwrap_or_default();
+    if trimmed == current {
+        return Ok(());
+    }
+    let gs = app.global_shortcut();
+    gs.register(trimmed)
+        .map_err(|e| format!("failed to register shortcut: {}", e))?;
+    let _ = gs.unregister(trimmed);
+    Ok(())
+}
+
+#[tauri::command]
+pub fn clear_all_data(app: AppHandle) -> Result<(), String> {
+    let state = app.state::<HistoryLock>();
+    let _g = state
+        .0
+        .lock()
+        .map_err(|_| "history lock poisoned".to_string())?;
+    clear_all(&app)?;
+    let empty_history: Vec<ClipboardItem> = Vec::new();
+    let empty_groups: Vec<Group> = Vec::new();
+    let defaults = Settings::default();
+    let _ = app.emit("history-updated", &empty_history);
+    let _ = app.emit("groups-updated", &empty_groups);
+    let _ = app.emit("settings-updated", &defaults);
+    Ok(())
 }
