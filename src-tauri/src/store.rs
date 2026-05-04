@@ -33,10 +33,16 @@ pub struct Settings {
     pub always_on_top: bool,
     #[serde(default = "default_show_footer")]
     pub show_footer: bool,
+    #[serde(default = "default_auto_capture_screenshots")]
+    pub auto_capture_screenshots: bool,
 }
 
 fn default_show_footer() -> bool {
     true
+}
+
+fn default_auto_capture_screenshots() -> bool {
+    cfg!(target_os = "macos")
 }
 
 impl Default for Settings {
@@ -49,6 +55,7 @@ impl Default for Settings {
             hide_on_blur: true,
             always_on_top: true,
             show_footer: true,
+            auto_capture_screenshots: cfg!(target_os = "macos"),
         }
     }
 }

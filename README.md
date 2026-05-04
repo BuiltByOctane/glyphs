@@ -34,7 +34,7 @@
 
 ## Installation
 
-Pre-built artifacts are published on the [Releases page](https://github.com/USERNAME/glyph/releases).
+Pre-built artifacts are published on the [Releases page](https://github.com/dev/glyphs/releases).
 
 ### macOS
 
@@ -61,7 +61,7 @@ Pre-built artifacts are published on the [Releases page](https://github.com/USER
 Glyph uses Tauri 2. Install the Tauri prerequisites for your OS first: <https://v2.tauri.app/start/prerequisites/>.
 
 ```sh
-git clone https://github.com/USERNAME/glyph.git
+git clone https://github.com/devoctane/glyphs.git
 cd glyph
 npm install
 
@@ -149,7 +149,7 @@ glyph/
 
 Issues and PRs are welcome. Please read **[CONTRIBUTING.md](CONTRIBUTING.md)** before opening a PR — it covers local setup, expected code style, and the pre-submission checklist. By participating you agree to abide by the [Code of Conduct](CODE_OF_CONDUCT.md). Security issues should follow the disclosure process in [SECURITY.md](SECURITY.md).
 
-Looking for somewhere to start? Search the [issues](https://github.com/USERNAME/glyph/issues) for the `good first issue` label, or pick one of the open areas listed in `CONTRIBUTING.md`.
+Looking for somewhere to start? Search the [issues](https://github.com/devoctane/glyphs/issues) for the `good first issue` label, or pick one of the open areas listed in `CONTRIBUTING.md`.
 
 ## License
 

@@ -377,6 +377,11 @@ pub fn update_settings(app: AppHandle, settings: Settings) -> Result<Settings, S
         }
     }
 
+    #[cfg(target_os = "macos")]
+    if new_settings.auto_capture_screenshots != prev.auto_capture_screenshots {
+        crate::screenshot_watcher::set_enabled(&app, new_settings.auto_capture_screenshots);
+    }
+
     save_settings(&app, &new_settings)?;
     let _ = app.emit("settings-updated", &new_settings);
     Ok(new_settings)

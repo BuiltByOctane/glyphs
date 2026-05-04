@@ -1,5 +1,7 @@
 mod clipboard_watcher;
 mod commands;
+#[cfg(target_os = "macos")]
+mod screenshot_watcher;
 mod store;
 
 use crate::store::{load_settings, HistoryLock, PrevApp, Settings};
@@ -142,7 +144,12 @@ pub fn run() {
                 })
                 .build(app)?;
 
-            clipboard_watcher::start_clipboard_watcher(app_handle);
+            clipboard_watcher::start_clipboard_watcher(app_handle.clone());
+
+            #[cfg(target_os = "macos")]
+            if settings.auto_capture_screenshots {
+                screenshot_watcher::start_screenshot_watcher(app_handle.clone());
+            }
 
             Ok(())
         })

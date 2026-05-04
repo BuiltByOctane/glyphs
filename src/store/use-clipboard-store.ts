@@ -27,6 +27,7 @@ export interface Settings {
   hideOnBlur: boolean;
   alwaysOnTop: boolean;
   showFooter: boolean;
+  autoCaptureScreenshots: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -37,6 +38,7 @@ export const DEFAULT_SETTINGS: Settings = {
   hideOnBlur: true,
   alwaysOnTop: true,
   showFooter: true,
+  autoCaptureScreenshots: true,
 };
 
 function mapItem(raw: Record<string, unknown>): ClipboardItem {

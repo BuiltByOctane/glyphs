@@ -126,19 +126,27 @@ impl Handler {
     }
 
     fn commit_image(&self, data_url: String, max_size: usize) -> Result<(), String> {
-        let lock = self.app.state::<HistoryLock>();
-        let _g = lock
-            .0
-            .lock()
-            .map_err(|_| "history lock poisoned".to_string())?;
-        let mut history = load_history(&self.app)?;
-        let item = take_or_new(&mut history, "image", &data_url);
-        history.insert(0, item);
-        history = trim_history(history, max_size);
-        save_history(&self.app, &history)?;
-        let _ = self.app.emit("history-updated", &history);
-        Ok(())
+        commit_image(&self.app, data_url, max_size)
     }
+}
+
+pub(crate) fn commit_image(
+    app: &AppHandle,
+    data_url: String,
+    max_size: usize,
+) -> Result<(), String> {
+    let lock = app.state::<HistoryLock>();
+    let _g = lock
+        .0
+        .lock()
+        .map_err(|_| "history lock poisoned".to_string())?;
+    let mut history = load_history(app)?;
+    let item = take_or_new(&mut history, "image", &data_url);
+    history.insert(0, item);
+    history = trim_history(history, max_size);
+    save_history(app, &history)?;
+    let _ = app.emit("history-updated", &history);
+    Ok(())
 }
 
 // Re-copying an existing item (e.g. via paste-back) must preserve the user's
@@ -213,7 +221,7 @@ fn encode_png_data_url(img: &arboard::ImageData) -> Option<String> {
     Some(format!("data:image/png;base64,{}", b64))
 }
 
-fn base64_encode(data: &[u8]) -> String {
+pub(crate) fn base64_encode(data: &[u8]) -> String {
     const CHARS: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     let mut out = String::with_capacity((data.len() + 2) / 3 * 4);
     for chunk in data.chunks(3) {

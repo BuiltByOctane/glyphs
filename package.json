@@ -5,13 +5,13 @@
   "type": "module",
   "description": "A fast, keyboard-first clipboard manager for macOS, Windows, and Linux.",
   "license": "MIT",
-  "homepage": "https://github.com/USERNAME/glyph#readme",
+  "homepage": "https://github.com/devoctane/glyphs#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/USERNAME/glyph.git"
+    "url": "git+https://github.com/devoctane/glyphs.git"
   },
   "bugs": {
-    "url": "https://github.com/USERNAME/glyph/issues"
+    "url": "https://github.com/devoctane/glyphs/issues"
   },
   "scripts": {
     "dev": "vite",

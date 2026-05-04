@@ -4,6 +4,10 @@ import { useClipboardStore, type Theme } from "../../../store/use-clipboard-stor
 import { SettingRow, Toggle, Segmented } from "./setting-row";
 import { ShortcutRecorder } from "./shortcut-recorder";
 import { Kbd } from "../../../components/kbd";
+import pkg from "../../../../package.json";
+
+const isMac =
+  typeof navigator !== "undefined" && /Mac/.test(navigator.platform);
 
 interface SettingsPageProps {
   onClose: () => void;
@@ -168,6 +172,23 @@ export function SettingsPage({ onClose }: SettingsPageProps) {
           </SettingRow>
         </Section>
 
+        {isMac && (
+          <Section title="Screenshots">
+            <SettingRow
+              label="Auto-import screenshots"
+              description="Capture screenshots saved to your screenshot folder (default: Desktop) into history. The original file stays in place."
+            >
+              <Toggle
+                checked={settings.autoCaptureScreenshots}
+                onChange={(next) =>
+                  void updateSettings({ autoCaptureScreenshots: next })
+                }
+                label="Auto-import screenshots"
+              />
+            </SettingRow>
+          </Section>
+        )}
+
         <Section title="Shortcuts">
           <SettingRow
             label="Toggle Glyph"
@@ -207,6 +228,11 @@ export function SettingsPage({ onClose }: SettingsPageProps) {
             </button>
           </SettingRow>
         </Section>
+
+        <div className="mt-6 px-4 py-3 text-center text-[11px] text-foreground/40">
+          <div>Octane Innovations FOSS</div>
+          <div className="mt-0.5">v{pkg.version}</div>
+        </div>
       </div>
     </div>
   );

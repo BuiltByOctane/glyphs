@@ -25,7 +25,7 @@ On macOS this means Xcode Command Line Tools. On Linux it means a handful of sys
 ### First-run setup
 
 ```sh
-git clone https://github.com/USERNAME/glyph.git
+git clone https://github.com/devoctane/glyphs.git
 cd glyph
 npm install
 npm run tauri:dev
@@ -99,4 +99,4 @@ For UI changes, please include a screenshot or short screen recording in the PR 
 
 ## Questions?
 
-Open a [discussion](https://github.com/USERNAME/glyph/discussions) (once the repo enables them) or file an issue tagged `question`.
+Open a [discussion](https://github.com/devoctane/glyphs/discussions) (once the repo enables them) or file an issue tagged `question`.
