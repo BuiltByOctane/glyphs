@@ -31,6 +31,12 @@ pub struct Settings {
     pub theme: String,
     pub hide_on_blur: bool,
     pub always_on_top: bool,
+    #[serde(default = "default_show_footer")]
+    pub show_footer: bool,
+}
+
+fn default_show_footer() -> bool {
+    true
 }
 
 impl Default for Settings {
@@ -42,6 +48,7 @@ impl Default for Settings {
             theme: "system".to_string(),
             hide_on_blur: true,
             always_on_top: true,
+            show_footer: true,
         }
     }
 }

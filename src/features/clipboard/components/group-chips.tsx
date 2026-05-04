@@ -45,7 +45,7 @@ export function GroupChips({ onAddGroup, onEditGroup }: GroupChipsProps) {
   }, [activeGroupId]);
 
   return (
-    <div className="flex h-12 shrink-0 items-center gap-2 border-b border-white/10 px-3">
+    <div className="flex h-12 shrink-0 items-center gap-2 border-b border-foreground/10 px-3">
       <div
         className="no-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto"
         ref={scrollRef}
@@ -56,8 +56,8 @@ export function GroupChips({ onAddGroup, onEditGroup }: GroupChipsProps) {
           className={cn(
             "flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 text-xs font-medium transition-colors",
             activeGroupId === "all"
-              ? "bg-white/20 text-white"
-              : "bg-white/5 text-white/60 hover:bg-white/10",
+              ? "bg-foreground/20 text-foreground"
+              : "bg-foreground/5 text-foreground/60 hover:bg-foreground/10",
           )}
         >
           <LayoutGrid size={14} />
@@ -78,8 +78,8 @@ export function GroupChips({ onAddGroup, onEditGroup }: GroupChipsProps) {
               className={cn(
                 "flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 text-xs font-medium transition-colors",
                 activeGroupId === group.id
-                  ? "bg-white/20 text-white"
-                  : "bg-white/5 text-white/60 hover:bg-white/10",
+                  ? "bg-foreground/20 text-foreground"
+                  : "bg-foreground/5 text-foreground/60 hover:bg-foreground/10",
               )}
               title="Double-click or Right-click to edit"
             >
@@ -92,7 +92,7 @@ export function GroupChips({ onAddGroup, onEditGroup }: GroupChipsProps) {
 
       <button
         onClick={onAddGroup}
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-white/5 text-white/60 transition-colors hover:bg-white/20 hover:text-white"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-foreground/5 text-foreground/60 transition-colors hover:bg-foreground/20 hover:text-foreground"
         title="Create Group"
       >
         <Plus size={14} />

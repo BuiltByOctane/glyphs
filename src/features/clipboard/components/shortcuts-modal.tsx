@@ -61,12 +61,12 @@ export function ShortcutsModal({ onClose }: ShortcutsModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center rounded-2xl bg-black/70 backdrop-blur-md p-4 animate-in fade-in duration-200">
-      <div className="flex max-h-[calc(100vh-2rem)] w-full max-w-md flex-col overflow-hidden rounded-xl border border-white/10 bg-neutral-950/80 shadow-2xl animate-in zoom-in-95 duration-200">
-        <div className="flex h-11 shrink-0 items-center justify-between border-b border-white/10 px-4">
-          <h2 className="text-sm font-semibold text-white">Keyboard Shortcuts</h2>
+      <div className="flex max-h-[calc(100vh-2rem)] w-full max-w-md flex-col overflow-hidden rounded-xl border border-foreground/10 bg-background/80 shadow-2xl animate-in zoom-in-95 duration-200">
+        <div className="flex h-11 shrink-0 items-center justify-between border-b border-foreground/10 px-4">
+          <h2 className="text-sm font-semibold text-foreground">Keyboard Shortcuts</h2>
           <button
             onClick={onClose}
-            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-white/50 transition-colors hover:bg-white/10 hover:text-white"
+            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-foreground/50 transition-colors hover:bg-foreground/10 hover:text-foreground"
             title="Close (Esc)"
           >
             <X size={16} />
@@ -76,16 +76,16 @@ export function ShortcutsModal({ onClose }: ShortcutsModalProps) {
         <div className="no-scrollbar min-h-0 overflow-y-auto p-4">
           {SECTIONS.map((section, idx) => (
             <div key={section.title} className={idx === 0 ? "" : "mt-5"}>
-              <div className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-white/40">
+              <div className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-foreground/40">
                 {section.title}
               </div>
-              <div className="divide-y divide-white/5">
+              <div className="divide-y divide-foreground/5">
                 {section.entries.map((entry) => (
                   <div
                     key={entry.label}
                     className="flex items-center justify-between gap-4 py-2"
                   >
-                    <span className="text-sm text-white/80">{entry.label}</span>
+                    <span className="text-sm text-foreground/80">{entry.label}</span>
                     <div className="flex items-center gap-1">
                       {entry.keys.map((k, i) => (
                         <Kbd key={i}>{k}</Kbd>

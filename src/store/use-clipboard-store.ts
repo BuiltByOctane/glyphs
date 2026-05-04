@@ -26,6 +26,7 @@ export interface Settings {
   theme: Theme;
   hideOnBlur: boolean;
   alwaysOnTop: boolean;
+  showFooter: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -35,6 +36,7 @@ export const DEFAULT_SETTINGS: Settings = {
   theme: "system",
   hideOnBlur: true,
   alwaysOnTop: true,
+  showFooter: true,
 };
 
 function mapItem(raw: Record<string, unknown>): ClipboardItem {

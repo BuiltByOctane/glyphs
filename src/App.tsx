@@ -165,12 +165,13 @@ export default function App() {
     activeGroupId,
     setActiveGroupId,
     setIsShortcutsModalOpen,
+    isSettingsOpen,
     setIsSettingsOpen,
   });
 
   return (
-    <div data-tauri-drag-region className="flex h-screen w-screen flex-col overflow-hidden rounded-2xl border border-white/20 bg-transparent text-foreground dark:border-white/10">
-      <div className="no-drag flex min-h-0 flex-1 flex-col overflow-hidden border-t border-white/20">
+    <div data-tauri-drag-region className="flex h-screen w-screen flex-col overflow-hidden rounded-2xl border border-foreground/20 bg-transparent text-foreground dark:border-foreground/10">
+      <div className="no-drag flex min-h-0 flex-1 flex-col overflow-hidden border-t border-foreground/20">
         {isSettingsOpen ? (
           <SettingsPage onClose={() => setIsSettingsOpen(false)} />
         ) : (
@@ -207,10 +208,12 @@ export default function App() {
         )}
       </div>
 
-      <Footer
-        onOpenShortcuts={() => setIsShortcutsModalOpen(true)}
-        onOpenSettings={() => setIsSettingsOpen(true)}
-      />
+      {settings.showFooter && (
+        <Footer
+          onOpenShortcuts={() => setIsShortcutsModalOpen(true)}
+          onOpenSettings={() => setIsSettingsOpen(true)}
+        />
+      )}
 
       {qrContent && (
         <QrModal content={qrContent} onClose={() => setQrContent(null)} />

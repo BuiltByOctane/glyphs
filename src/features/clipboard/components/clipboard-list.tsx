@@ -36,7 +36,7 @@ export function ClipboardList({
     <div className="no-scrollbar min-h-0 flex-1 overflow-y-auto py-2">
       {pinnedItems.length > 0 && (
         <div className="mb-2">
-          <div className="mb-1 px-4 py-1 text-xs font-semibold uppercase tracking-wider text-black/70 dark:text-white/70">
+          <div className="mb-1 px-4 py-1 text-xs font-semibold uppercase tracking-wider text-black/70 dark:text-foreground/70">
             Pinned
           </div>
           {pinnedItems.map((item, idx) => (
@@ -55,7 +55,7 @@ export function ClipboardList({
 
       {recentItems.length > 0 && (
         <div>
-          <div className="mb-1 px-4 py-1 text-xs font-semibold uppercase tracking-wider text-black/70 dark:text-white/70">
+          <div className="mb-1 px-4 py-1 text-xs font-semibold uppercase tracking-wider text-black/70 dark:text-foreground/70">
             Recent
           </div>
           {recentItems.map((item, idx) => (

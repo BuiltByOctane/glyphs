@@ -49,8 +49,8 @@ export function ItemRow({
       ref={rowRef}
       title={item.content}
       className={cn(
-        "group mx-2 mb-1.5 flex min-h-[3.25rem] cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white/10",
-        isSelected ? "bg-white/15 text-white" : "bg-white/5 text-foreground",
+        "group mx-2 mb-1.5 flex min-h-[3.25rem] cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-foreground/10",
+        isSelected ? "bg-foreground/15 text-foreground" : "bg-foreground/5 text-foreground",
       )}
       onClick={onClick}
     >
@@ -60,7 +60,7 @@ export function ItemRow({
             size={16}
             className={cn(
               "opacity-50 shrink-0",
-              isSelected ? "text-white" : "dark:text-white text-black",
+              isSelected ? "text-foreground" : "dark:text-white text-black",
             )}
           />
         ) : (
@@ -68,7 +68,7 @@ export function ItemRow({
             size={16}
             className={cn(
               "opacity-50 shrink-0",
-              isSelected ? "text-white" : "dark:text-white text-black",
+              isSelected ? "text-foreground" : "dark:text-white text-black",
             )}
           />
         )}
@@ -77,7 +77,7 @@ export function ItemRow({
             <span
               className={cn(
                 "block truncate",
-                isSelected ? "text-white" : "dark:text-white text-black",
+                isSelected ? "text-foreground" : "dark:text-white text-black",
               )}
             >
               {item.content.trim()}
@@ -90,7 +90,7 @@ export function ItemRow({
 
       <div className="relative flex h-8 w-[9.5rem] max-w-[45%] shrink-0 items-center justify-end">
         {displayIndex < 9 && (
-          <span className="pointer-events-none absolute right-0 rounded border border-white/5 bg-white/10 px-1.5 py-0.5 text-[10px] font-medium text-white/25 transition-opacity group-hover:opacity-0">
+          <span className="pointer-events-none absolute right-0 rounded border border-foreground/5 bg-foreground/10 px-1.5 py-0.5 text-[10px] font-medium text-foreground/25 transition-opacity group-hover:opacity-0">
             {"⌘"}
             <span className="ml-1">{displayIndex + 1}</span>
           </span>
@@ -105,7 +105,7 @@ export function ItemRow({
                 e.stopPropagation();
                 onShowMove(item);
               }}
-              className="flex h-7 w-7 items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10"
+              className="flex h-7 w-7 items-center justify-center rounded-md hover:bg-foreground/10 dark:hover:bg-foreground/10"
               title="Move to Group"
             >
               <FolderOpen
@@ -117,7 +117,7 @@ export function ItemRow({
           {item.type === "text" && (
             <button
               onClick={() => onShowQr(item.content)}
-              className="flex h-7 w-7 items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10"
+              className="flex h-7 w-7 items-center justify-center rounded-md hover:bg-foreground/10 dark:hover:bg-foreground/10"
               title="Generate QR Code"
             >
               <QrCode
@@ -128,7 +128,7 @@ export function ItemRow({
           )}
           <button
             onClick={() => pasteItem(item.id, true)}
-            className="flex h-7 w-7 items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10"
+            className="flex h-7 w-7 items-center justify-center rounded-md hover:bg-foreground/10 dark:hover:bg-foreground/10"
             title="Paste as Plain Text"
           >
             <ClipboardPaste
@@ -138,7 +138,7 @@ export function ItemRow({
           </button>
           <button
             onClick={() => togglePin(item.id)}
-            className="flex h-7 w-7 items-center justify-center rounded-md hover:bg-black/10 dark:hover:bg-white/10"
+            className="flex h-7 w-7 items-center justify-center rounded-md hover:bg-foreground/10 dark:hover:bg-foreground/10"
             title="Pin Item"
           >
             <Pin

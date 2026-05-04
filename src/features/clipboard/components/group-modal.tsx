@@ -68,14 +68,14 @@ export function GroupModal({ onClose, editGroup }: GroupModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center rounded-2xl justify-center p-4">
-      <div className="flex max-h-[calc(100vh-2rem)] w-full max-w-sm flex-col overflow-hidden rounded-lg border border-white/10 bg-neutral-900 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
-          <h2 className="text-sm font-regular text-white">
+      <div className="flex max-h-[calc(100vh-2rem)] w-full max-w-sm flex-col overflow-hidden rounded-lg border border-foreground/10 bg-background shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-foreground/10">
+          <h2 className="text-sm font-regular text-foreground">
             {editGroup ? "Edit Group" : "Create New Group"}
           </h2>
           <button
             onClick={onClose}
-            className="flex h-7 w-7 items-center justify-center rounded-md text-white/50 transition-colors hover:bg-white/10 hover:text-white"
+            className="flex h-7 w-7 items-center justify-center rounded-md text-foreground/50 transition-colors hover:bg-foreground/10 hover:text-foreground"
           >
             <X size={16} />
           </button>
@@ -83,7 +83,7 @@ export function GroupModal({ onClose, editGroup }: GroupModalProps) {
 
         <div className="min-h-0 space-y-4 overflow-y-auto p-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-white/70 uppercase tracking-wider">
+            <label className="text-xs font-medium text-foreground/70 uppercase tracking-wider">
               Name
             </label>
             <input
@@ -100,12 +100,12 @@ export function GroupModal({ onClose, editGroup }: GroupModalProps) {
                 }
               }}
               placeholder="e.g. Work, Ideas, Snippets..."
-              className="w-full rounded-md border mt-2 border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-white/30"
+              className="w-full rounded-md border mt-2 border-foreground/10 bg-foreground/5 px-3 py-2 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-1 focus:ring-white/30"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-mediuim text-white/70 uppercase tracking-wider">
+            <label className="text-xs font-mediuim text-foreground/70 uppercase tracking-wider">
               Icon
             </label>
             <div className="grid grid-cols-5 gap-2 mt-2">
@@ -118,8 +118,8 @@ export function GroupModal({ onClose, editGroup }: GroupModalProps) {
                     className={cn(
                       "flex h-9 items-center justify-center rounded-md transition-all",
                       icon === iconName
-                        ? "bg-white/20 text-white shadow-sm ring-0"
-                        : "bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/80",
+                        ? "bg-foreground/20 text-foreground shadow-sm ring-0"
+                        : "bg-foreground/5 text-foreground/50 hover:bg-foreground/10 hover:text-foreground/80",
                     )}
                     title={iconName}
                   >
@@ -131,7 +131,7 @@ export function GroupModal({ onClose, editGroup }: GroupModalProps) {
           </div>
         </div>
 
-        <div className="p-4 border-t border-white/10 flex items-center justify-between">
+        <div className="p-4 border-t border-foreground/10 flex items-center justify-between">
           {editGroup ? (
             <button
               onClick={handleDelete}
@@ -146,7 +146,7 @@ export function GroupModal({ onClose, editGroup }: GroupModalProps) {
           <button
             onClick={handleSave}
             disabled={name.trim().length < 2 || name.trim().length > 24}
-            className="flex h-8 items-center justify-center gap-1.5 rounded-md bg-white px-4 text-sm font-medium text-black transition-colors hover:bg-white/90 disabled:opacity-50 cursor-pointer"
+            className="flex h-8 items-center justify-center gap-1.5 rounded-md bg-white px-4 text-sm font-medium text-black transition-colors hover:bg-foreground/90 disabled:opacity-50 cursor-pointer"
           >
             {editGroup ? "Save" : "Create"}
           </button>

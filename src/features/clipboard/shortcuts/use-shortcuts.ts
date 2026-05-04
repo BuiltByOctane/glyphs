@@ -20,6 +20,7 @@ interface UseShortcutsProps {
   activeGroupId: string;
   setActiveGroupId: (id: string) => void;
   setIsShortcutsModalOpen: (open: boolean) => void;
+  isSettingsOpen: boolean;
   setIsSettingsOpen: (open: boolean) => void;
 }
 
@@ -33,6 +34,18 @@ export function useShortcuts(props: UseShortcutsProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const p = propsRef.current;
+
+      // Cmd/Ctrl + , toggles settings — handled before the modal gate so it
+      // works even when settings is already open (so the user can close it),
+      // and so it remains reachable when the footer is hidden.
+      if ((e.metaKey || e.ctrlKey) && e.key === ",") {
+        // Block if a non-settings modal is open — don't stack on top of those.
+        if (p.isAnyModalOpen && !p.isSettingsOpen) return;
+        e.preventDefault();
+        p.setIsSettingsOpen(!p.isSettingsOpen);
+        return;
+      }
+
       if (p.isAnyModalOpen) return;
 
       const isSearchFocused = document.activeElement === p.searchRef.current;
@@ -45,12 +58,6 @@ export function useShortcuts(props: UseShortcutsProps) {
       if ((e.metaKey || e.ctrlKey) && e.key === "g") {
         e.preventDefault();
         p.setIsGroupModalOpen(true);
-        return;
-      }
-
-      if ((e.metaKey || e.ctrlKey) && e.key === ",") {
-        e.preventDefault();
-        p.setIsSettingsOpen(true);
         return;
       }
 

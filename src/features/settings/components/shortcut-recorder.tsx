@@ -115,19 +115,19 @@ export function ShortcutRecorder({ value, onChange }: ShortcutRecorderProps) {
         className={cn(
           "flex h-8 items-center gap-1.5 rounded-md border px-2.5 text-xs font-medium transition-colors",
           recording
-            ? "border-white/30 bg-white/10 text-white"
-            : "border-white/10 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white",
+            ? "border-foreground/30 bg-foreground/10 text-foreground"
+            : "border-foreground/10 bg-foreground/5 text-foreground/80 hover:bg-foreground/10 hover:text-foreground",
           busy && "cursor-not-allowed opacity-50",
         )}
       >
         {recording ? (
-          <span className="text-white/70">Press a key combo… (Esc to cancel)</span>
+          <span className="text-foreground/70">Press a key combo… (Esc to cancel)</span>
         ) : (
           <>
             {parts.map((p, i) => (
               <Kbd key={i}>{p}</Kbd>
             ))}
-            <span className="ml-1 text-white/50">edit</span>
+            <span className="ml-1 text-foreground/50">edit</span>
           </>
         )}
       </button>
