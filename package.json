@@ -3,6 +3,16 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "description": "A fast, keyboard-first clipboard manager for macOS, Windows, and Linux.",
+  "license": "MIT",
+  "homepage": "https://github.com/USERNAME/glyph#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/USERNAME/glyph.git"
+  },
+  "bugs": {
+    "url": "https://github.com/USERNAME/glyph/issues"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

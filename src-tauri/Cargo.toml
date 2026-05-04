@@ -1,10 +1,11 @@
 [package]
 name = "glyphs"
 version = "0.1.0"
-description = "Glyphs – Clipboard Manager"
-authors = []
-license = ""
-repository = ""
+description = "A fast, keyboard-first clipboard manager for macOS, Windows, and Linux."
+authors = ["Glyph Contributors"]
+license = "MIT"
+repository = "https://github.com/USERNAME/glyph"
+homepage = "https://github.com/USERNAME/glyph#readme"
 edition = "2021"
 rust-version = "1.77.2"
 

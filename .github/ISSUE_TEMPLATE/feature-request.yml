@@ -1,0 +1,38 @@
+name: Feature request
+description: Suggest something Glyph should do that it doesn't today.
+title: "[feature] "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The best feature requests start with the *problem*, not the solution. Tell us what you're trying to do — the proposal will be easier to evaluate (and may end up looking very different from what you first imagined).
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you running into?
+      description: Describe the user job-to-be-done that today's Glyph doesn't cover, or covers awkwardly.
+      placeholder: I copy code snippets all day and need to find the one I copied two hours ago, but...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What you'd like Glyph to do. Concrete is better than abstract.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+      description: Workarounds, other tools, or different shapes of the same feature you thought about and rejected.
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Mockups, links to similar features in other apps, or anything else that helps.

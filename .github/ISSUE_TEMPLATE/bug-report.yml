@@ -1,0 +1,81 @@
+name: Bug report
+description: Something in Glyph isn't working the way it should.
+title: "[bug] "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a report. The more concrete the repro path, the faster this gets fixed.
+
+        **Before filing:** please search [open issues](https://github.com/USERNAME/glyph/issues) to make sure this isn't already tracked.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear, concise description of the bug.
+      placeholder: When I do X, Glyph does Y. I expected Z.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Exact, numbered steps. The more deterministic, the better.
+      placeholder: |
+        1. Launch Glyph
+        2. Press ⌘B to open the window
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What you're seeing instead. Screenshots / screen recordings welcome.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - macOS
+        - Windows
+        - Linux
+        - Other (specify in additional context)
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Glyph version
+      description: Visible in Settings, or the commit SHA if you built from source.
+      placeholder: "0.1.0 / commit abcdef1"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / console output
+      description: Anything from the dev console, terminal output, or system log that looks relevant.
+      render: shell
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Anything else that might help — recent changes, related issues, your guess at the cause.
