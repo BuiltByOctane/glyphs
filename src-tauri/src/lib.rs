@@ -6,7 +6,7 @@ use crate::store::{HistoryLock, PrevApp};
 use tauri::{
     menu::{Menu, MenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-    Manager,
+    Emitter, Manager,
 };
 
 pub fn run() {
@@ -17,7 +17,7 @@ pub fn run() {
         .plugin(tauri_plugin_log::Builder::new().build());
 
     let shortcut_plugin = tauri_plugin_global_shortcut::Builder::new()
-        .with_shortcut("CommandOrControl+Shift+V")
+        .with_shortcut("CommandOrControl+B")
         .map(|b| {
             b.with_handler(|app, _shortcut, event| {
                 if event.state() == tauri_plugin_global_shortcut::ShortcutState::Pressed {
@@ -31,7 +31,7 @@ pub fn run() {
         Ok(plugin) => builder.plugin(plugin),
         Err(e) => {
             log::error!(
-                "Failed to register global shortcut Cmd/Ctrl+Shift+V: {}. The app will run without it.",
+                "Failed to register global shortcut Cmd/Ctrl+B: {}. The app will run without it.",
                 e
             );
             builder
@@ -121,6 +121,7 @@ fn toggle_window(app: &tauri::AppHandle) {
             let _ = window.set_visible_on_all_workspaces(true);
             let _ = window.show();
             let _ = window.set_focus();
+            let _ = app.emit("window-shown", ());
         }
     }
 }

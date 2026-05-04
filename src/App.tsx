@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useRef } from "react";
+import { listen } from "@tauri-apps/api/event";
 import {
   type ClipboardItem,
   type Group,
@@ -59,6 +60,30 @@ export default function App() {
       cleanup?.();
     };
   }, [loadHistory, loadGroups]);
+
+  // Refocus the search input every time the window is shown (the input only
+  // autofocuses on initial mount; toggle_window emits window-shown on every
+  // open). Also reset the query so each session starts fresh.
+  useEffect(() => {
+    let cleanup: (() => void) | null = null;
+    let cancelled = false;
+    (async () => {
+      const unlisten = await listen("window-shown", () => {
+        setSearchQuery("");
+        // Focus on the next tick so the show animation has settled.
+        requestAnimationFrame(() => searchRef.current?.focus());
+      });
+      if (cancelled) {
+        unlisten();
+        return;
+      }
+      cleanup = unlisten;
+    })();
+    return () => {
+      cancelled = true;
+      cleanup?.();
+    };
+  }, [setSearchQuery]);
 
   const filteredItems = useMemo(
     () =>
