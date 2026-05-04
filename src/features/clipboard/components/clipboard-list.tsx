@@ -11,6 +11,7 @@ interface ClipboardListProps {
   onPasteItem: (id: string) => void;
   onShowQr: (content: string) => void;
   onShowMove: (item: ClipboardItem) => void;
+  onPreviewChange: (item: ClipboardItem | null, rect: DOMRect | null) => void;
 }
 
 export function ClipboardList({
@@ -22,6 +23,7 @@ export function ClipboardList({
   onPasteItem,
   onShowQr,
   onShowMove,
+  onPreviewChange,
 }: ClipboardListProps) {
   if (items.length === 0) {
     return (
@@ -48,6 +50,7 @@ export function ClipboardList({
               onClick={() => onPasteItem(item.id)}
               onShowQr={onShowQr}
               onShowMove={onShowMove}
+              onPreviewChange={onPreviewChange}
             />
           ))}
         </div>
@@ -67,6 +70,7 @@ export function ClipboardList({
               onClick={() => onPasteItem(item.id)}
               onShowQr={onShowQr}
               onShowMove={onShowMove}
+              onPreviewChange={onPreviewChange}
             />
           ))}
         </div>

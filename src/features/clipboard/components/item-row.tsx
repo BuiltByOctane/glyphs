@@ -18,6 +18,7 @@ interface ItemRowProps {
   onClick: () => void;
   onShowQr: (content: string) => void;
   onShowMove: (item: ClipboardItem) => void;
+  onPreviewChange: (item: ClipboardItem | null, rect: DOMRect | null) => void;
 }
 
 export function ItemRow({
@@ -27,6 +28,7 @@ export function ItemRow({
   onClick,
   onShowQr,
   onShowMove,
+  onPreviewChange,
 }: ItemRowProps) {
   const { togglePin, deleteItem, pasteItem, groups } = useClipboardStore();
   const rowRef = useRef<HTMLDivElement>(null);
@@ -36,6 +38,15 @@ export function ItemRow({
       rowRef.current.scrollIntoView({ block: "nearest" });
     }
   }, [isSelected]);
+
+  const handleEnter = () => {
+    if (rowRef.current) {
+      onPreviewChange(item, rowRef.current.getBoundingClientRect());
+    }
+  };
+  const handleLeave = () => {
+    onPreviewChange(null, null);
+  };
 
   // item.content for images is a `data:image/png;base64,...` string produced
   // by the Rust watcher. Treated as trusted in CSS background-image; if that
@@ -47,12 +58,13 @@ export function ItemRow({
   return (
     <div
       ref={rowRef}
-      title={item.content}
       className={cn(
         "group mx-2 mb-1.5 flex min-h-[3.25rem] cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-foreground/10",
         isSelected ? "bg-foreground/15 text-foreground" : "bg-foreground/5 text-foreground",
       )}
       onClick={onClick}
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
     >
       <div className="flex min-w-0 flex-1 items-center gap-3">
         {item.type === "text" ? (

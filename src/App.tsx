@@ -17,6 +17,7 @@ import { useShortcuts } from "./features/clipboard/shortcuts/use-shortcuts";
 import { QrModal } from "./features/clipboard/components/qr-modal";
 import { ShortcutsModal } from "./features/clipboard/components/shortcuts-modal";
 import { SettingsPage } from "./features/settings/components/settings-page";
+import { ItemPreview } from "./features/clipboard/components/item-preview";
 
 export default function App() {
   const {
@@ -38,12 +39,41 @@ export default function App() {
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [qrContent, setQrContent] = useState<string | null>(null);
-  const [moveModalItem, setMoveModalItem] = useState<ClipboardItem | null>(null);
+  const [moveModalItem, setMoveModalItem] = useState<ClipboardItem | null>(
+    null,
+  );
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
   const [isShortcutsModalOpen, setIsShortcutsModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [editGroup, setEditGroup] = useState<Group | null>(null);
+  const [previewState, setPreviewState] = useState<{
+    item: ClipboardItem;
+    rect: DOMRect;
+  } | null>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const previewTimerRef = useRef<number | null>(null);
+
+  // Hover-preview dispatcher with a single shared timer. The first show waits
+  // a beat so accidental fly-overs don't pop the popover; once it's visible,
+  // moving between rows updates instantly (the user is clearly browsing).
+  const handlePreview = (item: ClipboardItem | null, rect: DOMRect | null) => {
+    if (previewTimerRef.current !== null) {
+      clearTimeout(previewTimerRef.current);
+      previewTimerRef.current = null;
+    }
+    if (!item || !rect) {
+      setPreviewState(null);
+      return;
+    }
+    if (previewState) {
+      setPreviewState({ item, rect });
+      return;
+    }
+    previewTimerRef.current = window.setTimeout(() => {
+      setPreviewState({ item, rect });
+      previewTimerRef.current = null;
+    }, 320);
+  };
 
   // Register backend listeners first, then load initial data — this avoids the
   // startup race where a clipboard event fires before the listener is bound.
@@ -77,7 +107,8 @@ export default function App() {
     }
     const mql = window.matchMedia("(prefers-color-scheme: dark)");
     apply(mql.matches ? "dark" : "light");
-    const handler = (e: MediaQueryListEvent) => apply(e.matches ? "dark" : "light");
+    const handler = (e: MediaQueryListEvent) =>
+      apply(e.matches ? "dark" : "light");
     mql.addEventListener("change", handler);
     return () => mql.removeEventListener("change", handler);
   }, [settings.theme]);
@@ -109,7 +140,8 @@ export default function App() {
   const filteredItems = useMemo(
     () =>
       items.filter((item) => {
-        if (activeGroupId !== "all" && item.groupId !== activeGroupId) return false;
+        if (activeGroupId !== "all" && item.groupId !== activeGroupId)
+          return false;
         if (!searchQuery) return true;
         if (item.type === "image") return false;
         return item.content.toLowerCase().includes(searchQuery.toLowerCase());
@@ -149,6 +181,19 @@ export default function App() {
     moveModalItem !== null ||
     isSettingsOpen;
 
+  // Tear down any in-flight or visible preview when a modal opens, settings
+  // appears, or the underlying list disappears — otherwise the floating
+  // popover hangs around behind a modal or after its anchor scrolls away.
+  useEffect(() => {
+    if (isAnyModalOpen) {
+      if (previewTimerRef.current !== null) {
+        clearTimeout(previewTimerRef.current);
+        previewTimerRef.current = null;
+      }
+      setPreviewState(null);
+    }
+  }, [isAnyModalOpen]);
+
   useShortcuts({
     displayItems,
     selectedId,
@@ -170,7 +215,10 @@ export default function App() {
   });
 
   return (
-    <div data-tauri-drag-region className="flex h-screen w-screen flex-col overflow-hidden rounded-2xl border border-foreground/20 bg-transparent text-foreground dark:border-foreground/10">
+    <div
+      data-tauri-drag-region
+      className="flex h-screen w-screen flex-col overflow-hidden rounded-2xl border border-foreground/20 bg-white/70 dark:bg-transparent text-foreground dark:border-foreground/10"
+    >
       <div className="no-drag flex min-h-0 flex-1 flex-col overflow-hidden border-t border-foreground/20">
         {isSettingsOpen ? (
           <SettingsPage onClose={() => setIsSettingsOpen(false)} />
@@ -203,6 +251,7 @@ export default function App() {
               onPasteItem={pasteItem}
               onShowQr={setQrContent}
               onShowMove={setMoveModalItem}
+              onPreviewChange={handlePreview}
             />
           </>
         )}
@@ -235,6 +284,14 @@ export default function App() {
       )}
       {isShortcutsModalOpen && (
         <ShortcutsModal onClose={() => setIsShortcutsModalOpen(false)} />
+      )}
+
+      {previewState && !isAnyModalOpen && (
+        <ItemPreview
+          item={previewState.item}
+          rect={previewState.rect}
+          groups={groups}
+        />
       )}
     </div>
   );
