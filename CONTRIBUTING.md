@@ -39,10 +39,13 @@ That last command compiles the Rust shell, starts the Vite dev server, and opens
 | --------------------------------- | ----------------------------- |
 | Run dev build (HMR + Rust watch)  | `npm run tauri:dev`           |
 | Build release artifact            | `npm run tauri:build`         |
+| Build macOS universal release     | `npm run tauri:build -- --target universal-apple-darwin` |
 | Type-check the frontend           | `npx tsc --noEmit`            |
 | Lint the frontend                 | `npm run lint`                |
 | Compile the Rust backend          | `cd src-tauri && cargo check` |
 | Lint the Rust backend             | `cd src-tauri && cargo clippy --all-targets` |
+
+The macOS universal target requires both Rust targets installed once: `rustup target add aarch64-apple-darwin x86_64-apple-darwin`.
 
 ## Project layout
 

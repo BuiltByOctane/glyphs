@@ -38,10 +38,11 @@ Pre-built artifacts are published on the [Releases page](https://github.com/dev/
 
 ### macOS
 
-1. Download `Glyphs_x.y.z_aarch64.dmg` (Apple Silicon) or `Glyphs_x.y.z_x64.dmg` (Intel).
+1. Download `Glyphs_x.y.z_universal.dmg` — one universal build that runs on both Apple Silicon and Intel Macs.
 2. Open the `.dmg` and drag **Glyphs** to your Applications folder.
-3. Launch it. The first run will ask for *Accessibility* permission so it can simulate `⌘V` when you click an item — grant it under **System Settings → Privacy & Security → Accessibility**.
-4. Press the global shortcut (`⌘B` by default) to toggle the window.
+3. The build is currently unsigned, so on first launch macOS will say *"Glyphs can't be opened"* or *"is damaged"*. Either right-click the app and choose **Open**, or run `xattr -cr /Applications/Glyphs.app` once in Terminal to clear the quarantine flag.
+4. Launch it. The first run will ask for *Accessibility* permission so it can simulate `⌘V` when you click an item — grant it under **System Settings → Privacy & Security → Accessibility**.
+5. Press the global shortcut (`⌘B` by default) to toggle the window.
 
 ### Windows
 
@@ -73,6 +74,17 @@ npm run tauri:build
 ```
 
 The built binary lands in `src-tauri/target/release/bundle/`.
+
+### macOS universal build (Apple Silicon + Intel)
+
+To produce a single `.dmg` that runs on both Apple Silicon and Intel Macs, install both Rust targets first, then build with the `universal-apple-darwin` target:
+
+```sh
+rustup target add aarch64-apple-darwin x86_64-apple-darwin
+npm run tauri:build -- --target universal-apple-darwin
+```
+
+The artifact lands at `src-tauri/target/universal-apple-darwin/release/bundle/dmg/Glyphs_x.y.z_universal.dmg`. The fat binary is roughly twice the size of an arch-specific build but ships as one download.
 
 ### Required toolchains
 
