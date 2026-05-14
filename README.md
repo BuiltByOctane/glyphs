@@ -34,7 +34,9 @@
 
 ## Installation
 
-Pre-built artifacts are published on the [Releases page](https://github.com/dev/glyphs/releases).
+Pre-built artifacts are published on the [Releases page](https://github.com/devoctane/glyphs/releases).
+
+> **Platform status:** Only the macOS build is currently released and tested. Windows (`.exe`/`.msi`) and Linux (`.AppImage`/`.deb`) binaries are **not** shipped yet, and the app has not been tested on those platforms — expect OS-specific bugs (synthetic paste, global shortcuts, tray behavior, autostart) if you build from source. Contributions to get Windows and Linux to parity are very welcome — see [Contributing](#contributing).
 
 ### macOS
 
@@ -44,18 +46,9 @@ Pre-built artifacts are published on the [Releases page](https://github.com/dev/
 4. Launch it. The first run will ask for *Accessibility* permission so it can simulate `⌘V` when you click an item — grant it under **System Settings → Privacy & Security → Accessibility**.
 5. Press the global shortcut (`⌘B` by default) to toggle the window.
 
-### Windows
+### Windows & Linux
 
-1. Download `Glyphs_x.y.z_x64-setup.msi`.
-2. Run the installer.
-3. Launch from the Start Menu or system tray.
-
-### Linux
-
-1. Download the `.AppImage` or `.deb` artifact.
-2. **AppImage**: `chmod +x Glyphs_x.y.z_amd64.AppImage && ./Glyphs_x.y.z_amd64.AppImage`.
-3. **Debian/Ubuntu**: `sudo dpkg -i Glyphs_x.y.z_amd64.deb`.
-4. Launch from your application launcher.
+No pre-built artifacts are published yet. You can build from source (see [Build from source](#build-from-source)), but the app is **untested** on these platforms and OS-specific issues are expected. Help wanted — see [Contributing](#contributing).
 
 ## Build from source
 
@@ -64,7 +57,7 @@ Glyph uses Tauri 2. Install the Tauri prerequisites for your OS first: <https://
 ```sh
 git clone https://github.com/devoctane/glyphs.git
 cd glyph
-npm install
+npm install/Applications/Glyphs.app 
 
 # Development (hot-reloading dev build)
 npm run tauri:dev
@@ -162,6 +155,12 @@ glyph/
 Issues and PRs are welcome. Please read **[CONTRIBUTING.md](CONTRIBUTING.md)** before opening a PR — it covers local setup, expected code style, and the pre-submission checklist. By participating you agree to abide by the [Code of Conduct](CODE_OF_CONDUCT.md). Security issues should follow the disclosure process in [SECURITY.md](SECURITY.md).
 
 Looking for somewhere to start? Search the [issues](https://github.com/devoctane/glyphs/issues) for the `good first issue` label, or pick one of the open areas listed in `CONTRIBUTING.md`.
+
+### A note on AI / agentic contributions
+
+You're free to use AI assistants and agentic coding tools (Claude Code, Cursor, Copilot, etc.) on this codebase — there are no restrictions. **But with great power comes great responsibility:** understand what you're pushing and *why*, not just *what*. Skim the diff, run it locally, and be able to defend the change in review.
+
+For full transparency: the entire Rust/Tauri shell was migrated from an earlier Electron prototype with heavy AI assistance, back when I wasn't a Rust guy. I can now explain how the code works and why it's written that way — but it took going back and reading every line after the fact. Please don't skip that step.
 
 ## License
 

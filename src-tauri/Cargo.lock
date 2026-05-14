@@ -1682,6 +1682,7 @@ dependencies = [
  "image",
  "log",
  "notify",
+ "objc",
  "png 0.18.1",
  "serde",
  "serde_json",

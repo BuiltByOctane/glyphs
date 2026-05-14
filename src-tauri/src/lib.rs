@@ -19,7 +19,7 @@ pub fn run() {
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_log::Builder::new().build())
         .plugin(tauri_plugin_autostart::init(
-            tauri_plugin_autostart::MacosLauncher::LaunchAgent,
+            tauri_plugin_autostart::MacosLauncher::AppleScript,
             None,
         ));
 
@@ -80,7 +80,9 @@ pub fn run() {
                         None,
                         Some(16.0),
                     );
+                    apply_fullscreen_join_behavior(&win);
                 }
+                cleanup_legacy_launch_agent();
             }
 
             // Apply persisted settings: shortcut, always-on-top, autostart.
@@ -103,6 +105,11 @@ pub fn run() {
 
             if let Some(window) = app.get_webview_window("main") {
                 let _ = window.set_always_on_top(settings.always_on_top);
+                // set_always_on_top resets the window level on macOS, so
+                // re-apply the join-fullscreen behavior (which also sets
+                // NSStatusWindowLevel) after it.
+                #[cfg(target_os = "macos")]
+                apply_fullscreen_join_behavior(&window);
             }
 
             // Reconcile auto-start with the persisted setting.
@@ -174,12 +181,80 @@ fn toggle_window(app: &tauri::AppHandle) {
             let _ = window.hide();
         } else {
             #[cfg(target_os = "macos")]
-            capture_prev_app(app);
-            let _ = window.set_visible_on_all_workspaces(true);
+            {
+                capture_prev_app(app);
+                // Re-apply on every show: set_always_on_top and other AppKit
+                // operations can reset collection behavior, and without it
+                // the popover either disappears in fullscreen Spaces or
+                // yanks the user back to its home Space instead of floating
+                // over the active (fullscreen) one.
+                apply_fullscreen_join_behavior(&window);
+            }
             let _ = window.show();
             let _ = window.set_focus();
+            #[cfg(target_os = "macos")]
+            order_front_regardless(&window);
             let _ = app.emit("window-shown", ());
         }
+    }
+}
+
+#[cfg(target_os = "macos")]
+fn apply_fullscreen_join_behavior(window: &tauri::WebviewWindow) {
+    use objc::runtime::Object;
+    use objc::{msg_send, sel, sel_impl};
+
+    // NSWindowCollectionBehaviorCanJoinAllSpaces (1 << 0) lets the window
+    // float across Spaces; NSWindowCollectionBehaviorFullScreenAuxiliary
+    // (1 << 8) is what allows it to appear over apps in fullscreen Spaces.
+    // Tauri's set_visible_on_all_workspaces only sets the first bit, so
+    // without this the popover is invisible whenever any app is fullscreen.
+    if let Ok(ns_window) = window.ns_window() {
+        unsafe {
+            let ns_window = ns_window as *mut Object;
+            let behavior: u64 = (1 << 0) | (1 << 8);
+            let _: () = msg_send![ns_window, setCollectionBehavior: behavior];
+            // NSStatusWindowLevel (25) keeps us above fullscreen content;
+            // the default floating level can still be occluded by the
+            // fullscreen app's menu/dock overlay on some macOS versions.
+            let _: () = msg_send![ns_window, setLevel: 25_i64];
+        }
+    }
+}
+
+#[cfg(target_os = "macos")]
+fn order_front_regardless(window: &tauri::WebviewWindow) {
+    use objc::runtime::Object;
+    use objc::{msg_send, sel, sel_impl};
+
+    // makeKeyAndOrderFront (which set_focus calls) can pull the system to
+    // the window's home Space; orderFrontRegardless brings it forward on
+    // whatever Space is currently active without switching.
+    if let Ok(ns_window) = window.ns_window() {
+        unsafe {
+            let ns_window = ns_window as *mut Object;
+            let _: () = msg_send![ns_window, orderFrontRegardless];
+        }
+    }
+}
+
+#[cfg(target_os = "macos")]
+fn cleanup_legacy_launch_agent() {
+    // Older builds used MacosLauncher::LaunchAgent which wrote a plist with a
+    // captured executable path; that path goes stale after reinstall and the
+    // agent silently no-ops at login. We now use AppleScript (Login Items),
+    // so remove any stale plist and unload it from launchd if still resident.
+    let Some(home) = std::env::var_os("HOME") else {
+        return;
+    };
+    let plist = std::path::PathBuf::from(home)
+        .join("Library/LaunchAgents/dev.glyphs.app.plist");
+    if plist.exists() {
+        let _ = std::process::Command::new("launchctl")
+            .args(["unload", "-w"])
+            .arg(&plist)
+            .output();
+        let _ = std::fs::remove_file(&plist);
     }
 }
 
