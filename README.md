@@ -82,6 +82,7 @@ The artifact lands at `src-tauri/target/universal-apple-darwin/release/bundle/dm
 ### Required toolchains
 
 - **Node.js** 20 or newer
+- **pnpm** 10 or newer — the package manager this project uses (`npm install -g pnpm`, or run `corepack enable` to pick up the version pinned in `package.json`)
 - **Rust** 1.77.2 or newer (the version pinned in `src-tauri/Cargo.toml`)
 - Platform deps documented at the Tauri prerequisites link above.
 

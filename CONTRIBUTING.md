@@ -17,6 +17,7 @@ If you're not sure whether something is a bug or expected behavior, file it as a
 ### Prerequisites
 
 - **Node.js** 20 or newer
+- **pnpm** 10 or newer — `npm install -g pnpm`, or run `corepack enable` to use the version pinned in `package.json`
 - **Rust** 1.77.2 or newer (matches `src-tauri/Cargo.toml`)
 - Tauri 2 platform prerequisites: <https://v2.tauri.app/start/prerequisites/>
 
@@ -44,6 +45,7 @@ That last command compiles the Rust shell, starts the Vite dev server, and opens
 | Lint the frontend                 | `pnpm lint`                   |
 | Compile the Rust backend          | `cd src-tauri && cargo check` |
 | Lint the Rust backend             | `cd src-tauri && cargo clippy --all-targets` |
+| Remove build artifacts & caches   | `pnpm clean`                  |
 
 The macOS universal target requires both Rust targets installed once: `rustup target add aarch64-apple-darwin x86_64-apple-darwin`.
 
