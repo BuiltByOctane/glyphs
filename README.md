@@ -57,13 +57,13 @@ Glyph uses Tauri 2. Install the Tauri prerequisites for your OS first: <https://
 ```sh
 git clone https://github.com/devoctane/glyphs.git
 cd glyph
-npm install/Applications/Glyphs.app 
+pnpm install
 
 # Development (hot-reloading dev build)
-npm run tauri:dev
+pnpm tauri:dev
 
 # Release artifact for your current OS
-npm run tauri:build
+pnpm tauri:build
 ```
 
 The built binary lands in `src-tauri/target/release/bundle/`.
@@ -74,7 +74,7 @@ To produce a single `.dmg` that runs on both Apple Silicon and Intel Macs, insta
 
 ```sh
 rustup target add aarch64-apple-darwin x86_64-apple-darwin
-npm run tauri:build -- --target universal-apple-darwin
+pnpm tauri:build --target universal-apple-darwin
 ```
 
 The artifact lands at `src-tauri/target/universal-apple-darwin/release/bundle/dmg/Glyphs_x.y.z_universal.dmg`. The fat binary is roughly twice the size of an arch-specific build but ships as one download.

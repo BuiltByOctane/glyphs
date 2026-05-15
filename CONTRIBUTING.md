@@ -27,8 +27,8 @@ On macOS this means Xcode Command Line Tools. On Linux it means a handful of sys
 ```sh
 git clone https://github.com/devoctane/glyphs.git
 cd glyph
-npm install
-npm run tauri:dev
+pnpm install
+pnpm tauri:dev
 ```
 
 That last command compiles the Rust shell, starts the Vite dev server, and opens the app with hot-reloading for the React side. Rust changes trigger a rebuild and restart.
@@ -37,11 +37,11 @@ That last command compiles the Rust shell, starts the Vite dev server, and opens
 
 | Goal                              | Command                       |
 | --------------------------------- | ----------------------------- |
-| Run dev build (HMR + Rust watch)  | `npm run tauri:dev`           |
-| Build release artifact            | `npm run tauri:build`         |
-| Build macOS universal release     | `npm run tauri:build -- --target universal-apple-darwin` |
-| Type-check the frontend           | `npx tsc --noEmit`            |
-| Lint the frontend                 | `npm run lint`                |
+| Run dev build (HMR + Rust watch)  | `pnpm tauri:dev`              |
+| Build release artifact            | `pnpm tauri:build`            |
+| Build macOS universal release     | `pnpm tauri:build --target universal-apple-darwin` |
+| Type-check the frontend           | `pnpm exec tsc --noEmit`      |
+| Lint the frontend                 | `pnpm lint`                   |
 | Compile the Rust backend          | `cd src-tauri && cargo check` |
 | Lint the Rust backend             | `cd src-tauri && cargo clippy --all-targets` |
 
@@ -57,7 +57,7 @@ See the **Project structure** section in [README.md](README.md). High level:
 
 ## Code style
 
-- **TypeScript / React** — flat ESLint config in `.eslintrc.cjs`. Run `npm run lint` and resolve all warnings before pushing. Prefer simple components; we don't reach for state management beyond Zustand.
+- **TypeScript / React** — flat ESLint config in `.eslintrc.cjs`. Run `pnpm lint` and resolve all warnings before pushing. Prefer simple components; we don't reach for state management beyond Zustand.
 - **Rust** — pass `cargo clippy --all-targets` cleanly. Keep functions small and return `Result<_, String>` from commands so the frontend gets a useful error message via `invoke()`.
 - **Comments** — only when the *why* is non-obvious (a hidden invariant, a race, a workaround). If a clear identifier explains *what*, don't add a comment.
 - **Don't add abstractions a single caller wouldn't need.** Three similar lines beat a premature helper.
@@ -84,8 +84,8 @@ One PR = one logical change. If you're tempted to bundle "and also fixed X" into
 
 Before opening a PR, please run:
 
-- [ ] `npx tsc --noEmit` — type-check passes
-- [ ] `npm run lint` — eslint clean
+- [ ] `pnpm exec tsc --noEmit` — type-check passes
+- [ ] `pnpm lint` — eslint clean
 - [ ] `cd src-tauri && cargo check` — Rust compiles
 - [ ] `cd src-tauri && cargo clippy --all-targets` — no new warnings
 - [ ] Manual smoke: clipboard captures still work, paste-back preserves pin/group, settings persist across a restart

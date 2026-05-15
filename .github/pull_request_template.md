@@ -20,11 +20,11 @@
 
 ## Pre-merge checklist
 
-- [ ] `npx tsc --noEmit` passes
-- [ ] `npm run lint` passes
+- [ ] `pnpm exec tsc --noEmit` passes
+- [ ] `pnpm lint` passes
 - [ ] `cd src-tauri && cargo check` passes
 - [ ] `cd src-tauri && cargo clippy --all-targets` passes (no new warnings)
-- [ ] Manually tested the affected paths in `npm run tauri:dev`
+- [ ] Manually tested the affected paths in `pnpm tauri:dev`
 - [ ] For UI changes: screenshot or recording attached above
 - [ ] For new settings: defaults documented and persisted across restart
 - [ ] For new permissions: capability added to `src-tauri/capabilities/default.json`
