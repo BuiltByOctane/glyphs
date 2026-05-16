@@ -34,7 +34,7 @@
 
 ## Installation
 
-Pre-built artifacts are published on the [Releases page](https://github.com/devoctane/glyphs/releases).
+Pre-built artifacts are published on the [Releases page](https://github.com/builtbyoctane/glyphs/releases).
 
 > **Platform status:** Only the macOS build is currently released and tested. Windows (`.exe`/`.msi`) and Linux (`.AppImage`/`.deb`) binaries are **not** shipped yet, and the app has not been tested on those platforms — expect OS-specific bugs (synthetic paste, global shortcuts, tray behavior, autostart) if you build from source. Contributions to get Windows and Linux to parity are very welcome — see [Contributing](#contributing).
 
@@ -55,7 +55,7 @@ No pre-built artifacts are published yet. You can build from source (see [Build 
 Glyph uses Tauri 2. Install the Tauri prerequisites for your OS first: <https://v2.tauri.app/start/prerequisites/>.
 
 ```sh
-git clone https://github.com/devoctane/glyphs.git
+git clone https://github.com/builtbyoctane/glyphs.git
 cd glyph
 pnpm install
 
@@ -155,7 +155,7 @@ glyph/
 
 Issues and PRs are welcome. Please read **[CONTRIBUTING.md](CONTRIBUTING.md)** before opening a PR — it covers local setup, expected code style, and the pre-submission checklist. By participating you agree to abide by the [Code of Conduct](CODE_OF_CONDUCT.md). Security issues should follow the disclosure process in [SECURITY.md](SECURITY.md).
 
-Looking for somewhere to start? Search the [issues](https://github.com/devoctane/glyphs/issues) for the `good first issue` label, or pick one of the open areas listed in `CONTRIBUTING.md`.
+Looking for somewhere to start? Search the [issues](https://github.com/builtbyoctane/glyphs/issues) for the `good first issue` label, or pick one of the open areas listed in `CONTRIBUTING.md`.
 
 ### A note on AI / agentic contributions
 

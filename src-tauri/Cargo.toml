@@ -4,8 +4,8 @@ version = "0.1.0"
 description = "A fast, keyboard-first clipboard manager for macOS, Windows, and Linux."
 authors = ["Glyph Contributors"]
 license = "MIT"
-repository = "https://github.com/devoctane/glyphs"
-homepage = "https://github.com/devoctane/glyphs#readme"
+repository = "https://github.com/builtbyoctane/glyphs"
+homepage = "https://github.com/builtbyoctane/glyphs#readme"
 edition = "2021"
 rust-version = "1.77.2"
 

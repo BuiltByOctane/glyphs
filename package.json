@@ -6,13 +6,13 @@
   "packageManager": "pnpm@10.33.2",
   "description": "A fast, keyboard-first clipboard manager for macOS, Windows, and Linux.",
   "license": "MIT",
-  "homepage": "https://github.com/devoctane/glyphs#readme",
+  "homepage": "https://github.com/builtbyoctane/glyphs#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/devoctane/glyphs.git"
+    "url": "git+https://github.com/builtbyoctane/glyphs.git"
   },
   "bugs": {
-    "url": "https://github.com/devoctane/glyphs/issues"
+    "url": "https://github.com/builtbyoctane/glyphs/issues"
   },
   "scripts": {
     "dev": "vite",
