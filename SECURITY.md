@@ -6,7 +6,7 @@ Glyph holds your clipboard history on disk. We take that seriously — please re
 
 **Please do not file a public issue for security problems.** Instead, email:
 
-> **support.github@octane.team** — subject line starting with `[security]`.
+> **oss@octane.team** — subject line starting with `[security]`.
 
 Include in your report:
 
